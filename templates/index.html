@@ -459,6 +459,63 @@
             height: 20px;
         }
 
+        /* Mic Button */
+        .mic-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: var(--white);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .mic-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .mic-btn.recording {
+            animation: pulse 1s infinite;
+            background: linear-gradient(135deg, #ff6b6b 0%, #e74c3c 100%);
+        }
+
+        .mic-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Speaker Button */
+        .speaker-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: var(--gray-500);
+            transition: color 0.2s ease;
+        }
+
+        .speaker-btn:hover {
+            color: var(--hdfc-blue);
+        }
+
         /* Disclaimer */
         .disclaimer {
             text-align: center;
@@ -550,6 +607,13 @@
                     <div class="input-wrapper">
                         <textarea class="input-field" id="messageInput" placeholder="Type your message..." rows="1"
                             onkeydown="handleKeyDown(event)"></textarea>
+                        <button class="mic-btn" id="micBtn" onclick="toggleRecording()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+                                <path
+                                    d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+                            </svg>
+                        </button>
                         <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path
@@ -725,6 +789,149 @@
                 addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
             } catch (error) {
                 console.error('Failed to reset chat:', error);
+            }
+        }
+
+        // Voice Recording Variables
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        const micBtn = document.getElementById('micBtn');
+
+        async function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    await sendVoiceMessage(audioBlob);
+
+                    // Stop all tracks to release mic
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                micBtn.classList.add('recording');
+
+            } catch (error) {
+                console.error('Microphone access denied:', error);
+                addMessage('assistant', '🎤 Please allow microphone access to use voice input.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                micBtn.classList.remove('recording');
+            }
+        }
+
+        async function sendVoiceMessage(audioBlob) {
+            // Show typing indicator
+            showTyping();
+
+            // Add loading status
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loadingStatus';
+            loadingDiv.className = 'message assistant';
+            loadingDiv.innerHTML = `
+                <div class="message-avatar">AI</div>
+                <div class="message-content" style="color: var(--gray-500); font-style: italic;">
+                    🎤 Processing voice input...
+                </div>
+            `;
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.webm');
+
+                const response = await fetch('/api/voice', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                hideTyping();
+
+                // Remove loading status
+                const loadingElement = document.getElementById('loadingStatus');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+
+                if (data.status === 'success') {
+                    // Display user's transcribed message
+                    addMessage('user', data.user_text);
+
+                    // Display agent's response
+                    addMessage('assistant', data.agent_text);
+
+                    // Process debug logs
+                    if (data.logs && data.logs.length > 0) {
+                        data.logs.forEach(log => {
+                            addDebugLog(log.timestamp, log.message, log.type);
+                        });
+                    }
+
+                    // Play audio if available
+                    if (data.audio_base64) {
+                        playAudio(data.audio_base64);
+                    }
+                } else {
+                    addMessage('assistant', 'I apologize, but I encountered an error processing your voice. Please try again.');
+                }
+            } catch (error) {
+                hideTyping();
+
+                const loadingElement = document.getElementById('loadingStatus');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+
+                console.error('Voice processing error:', error);
+                addMessage('assistant', 'I apologize, but I\'m having trouble processing your voice. Please try typing instead.');
+            }
+        }
+
+        function playAudio(base64Audio) {
+            try {
+                const audioData = atob(base64Audio);
+                const arrayBuffer = new ArrayBuffer(audioData.length);
+                const view = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < audioData.length; i++) {
+                    view[i] = audioData.charCodeAt(i);
+                }
+
+                const audioBlob = new Blob([arrayBuffer], { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+
+                // Clean up URL after playback
+                audio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                };
+            } catch (error) {
+                console.error('Audio playback error:', error);
             }
         }
     </script>

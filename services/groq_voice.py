@@ -1,0 +1,99 @@
+"""
+Groq Voice Service for Speech-to-Text and Text-to-Speech.
+Uses Whisper for transcription and Orpheus for speech synthesis.
+"""
+
+import os
+import base64
+from typing import Optional
+from groq import Groq
+
+# Initialize Groq client
+_client = None
+
+def _get_client():
+    """Get or create Groq client."""
+    global _client
+    if _client is None:
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            raise ValueError("GROQ_API_KEY environment variable not set")
+        _client = Groq(api_key=api_key)
+    return _client
+
+
+def transcribe_audio(audio_file_object) -> str:
+    """
+    Transcribe audio to text using Whisper.
+    
+    Args:
+        audio_file_object: File-like object containing audio data (Flask FileStorage)
+        
+    Returns:
+        Transcribed text string
+    """
+    client = _get_client()
+    
+    try:
+        # Read file content and create tuple format expected by Groq
+        # Format: (filename, file_content, content_type)
+        file_content = audio_file_object.read()
+        filename = getattr(audio_file_object, 'filename', 'audio.webm')
+        
+        transcription = client.audio.transcriptions.create(
+            file=(filename, file_content),
+            model="whisper-large-v3-turbo"
+        )
+        
+        transcript = transcription.text
+        print(f"🎤 Transcribed: {transcript}")
+        return transcript
+        
+    except Exception as e:
+        print(f"❌ STT Error: {e}")
+        raise
+
+
+def generate_audio(text: str) -> Optional[bytes]:
+    """
+    Generate speech audio from text using Orpheus TTS.
+    
+    Args:
+        text: Text to convert to speech
+        
+    Returns:
+        Audio bytes (WAV format), or None if TTS fails (rate limit, etc.)
+    """
+    client = _get_client()
+    
+    try:
+        response = client.audio.speech.create(
+            model="canopylabs/orpheus-v1-english",
+            input=text,
+            voice="hannah",
+            response_format="wav"
+        )
+        
+        # Get audio bytes from response
+        audio_bytes = response.read()
+        print(f"🔊 TTS Generated: {len(audio_bytes)} bytes")
+        return audio_bytes
+        
+    except Exception as e:
+        # Don't crash on TTS failure (rate limit, etc.)
+        # Just log and return None - text response will still work
+        print(f"⚠️ TTS Failed (will show text only): {e}")
+        return None
+
+
+def audio_to_base64(audio_bytes: bytes) -> str:
+    """
+    Encode audio bytes to base64 string for JSON response.
+    
+    Args:
+        audio_bytes: Raw audio bytes
+        
+    Returns:
+        Base64 encoded string
+    """
+    return base64.b64encode(audio_bytes).decode('utf-8')
