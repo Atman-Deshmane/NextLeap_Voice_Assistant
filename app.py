@@ -75,12 +75,13 @@ def chat():
         
         engine = _engine_instances[session_id]
         
-        # Get response from LLM
-        response = engine.chat(user_message)
+        # Get response from LLM (returns dict with text and ui_hint)
+        result = engine.chat(user_message)
         
         return jsonify({
             "status": "success",
-            "response": response,
+            "response": result.get("text", ""),
+            "ui_component": result.get("ui_hint"),
             "logs": g.logs  # Include debug logs
         })
         

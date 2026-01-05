@@ -255,7 +255,7 @@ class LLMEngine:
         except Exception as e:
             return {"error": str(e)}
     
-    def chat(self, user_message: str) -> str:
+    def chat(self, user_message: str) -> Dict[str, Any]:
         """
         Process a user message and return the assistant's response.
         Handles function calling loop automatically.
@@ -264,7 +264,7 @@ class LLMEngine:
             user_message: The user's message
             
         Returns:
-            The assistant's response text
+            Dict containing 'text' and optional 'ui_hint'
         """
         # Add user message to history
         self.conversation_history.append(
@@ -287,6 +287,7 @@ class LLMEngine:
         # Maximum iterations for function calling loop
         max_iterations = 10
         iteration = 0
+        ui_hint = None
         
         while iteration < max_iterations:
             iteration += 1
@@ -300,7 +301,7 @@ class LLMEngine:
             
             # Check if we have a response
             if not response.candidates or not response.candidates[0].content.parts:
-                return "I apologize, but I couldn't generate a response. Please try again."
+                return {"text": "I apologize, but I couldn't generate a response. Please try again.", "ui_hint": None}
             
             response_parts = response.candidates[0].content.parts
             
@@ -321,6 +322,22 @@ class LLMEngine:
                 for part in function_calls:
                     fc = part.function_call
                     result = self._execute_function(fc.name, dict(fc.args))
+                    
+                    # Capture UI Hints from Tool Calls
+                    if fc.name == "check_availability":
+                        ui_hint = {
+                            "type": "calendar_widget", 
+                            "data": {
+                                "date": fc.args.get("date_str"), 
+                                "slots": result if isinstance(result, list) else []
+                            }
+                        }
+                    elif fc.name == "book_slot" and isinstance(result, dict) and result.get("status") == "success":
+                        ui_hint = {"type": "booking_card", "data": result}
+                    elif fc.name == "find_booking_by_name_and_time" and isinstance(result, dict) and result.get("status") == "success":
+                         # Only show manage card if we found exactly one booking or a list of bookings
+                         ui_hint = {"type": "manage_card", "data": result}
+
                     function_responses.append(
                         types.Part(
                             function_response=types.FunctionResponse(
@@ -342,6 +359,10 @@ class LLMEngine:
                 text_parts = [part.text for part in response_parts if part.text]
                 final_response = " ".join(text_parts) if text_parts else "I'm here to help you schedule an appointment."
                 
+                # Detect Topic Selector Intent if no other hint is set
+                if not ui_hint and ("topic" in final_response.lower() and "?" in final_response):
+                    ui_hint = {"type": "topic_selector"}
+
                 # Add assistant response to history
                 self.conversation_history.append(
                     types.Content(
@@ -358,9 +379,9 @@ class LLMEngine:
                         final_response
                     )
                 
-                return final_response
+                return {"text": final_response, "ui_hint": ui_hint}
         
-        return "I apologize, but I'm having trouble processing your request. Please try again."
+        return {"text": "I apologize, but I'm having trouble processing your request. Please try again.", "ui_hint": None}
     
     def reset_conversation(self):
         """Reset the conversation history and start a new session."""

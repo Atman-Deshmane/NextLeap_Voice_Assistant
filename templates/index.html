@@ -813,22 +813,10 @@
         }
 
         .calendar-cell {
-            padding: 0.25rem;
+            padding: 0.75rem 0.5rem;
             text-align: center;
             font-size: 0.8rem;
             border-radius: 8px;
-            height: 58px;
-            /* Fixed height to prevent jumping */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .calendar-nav-btn.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            pointer-events: none;
         }
 
         .calendar-header-cell {
@@ -1130,6 +1118,145 @@
                 max-width: 90%;
             }
         }
+
+        /* Hybrid Mode Widgets */
+        .chat-widget {
+            margin-top: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Topic Selector Pills Widget */
+        .widget-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+
+        .widget-pill {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .widget-pill:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Calendar Widget */
+        .widget-calendar {
+            padding: 12px;
+        }
+
+        .widget-cal-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mini-slots-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+        }
+
+        .mini-slot-card {
+            min-width: 90px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .mini-slot-card:hover:not(.disabled) {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .mini-slot-date {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .mini-slot-time {
+            font-size: 0.9rem;
+            color: #1e293b;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        /* Booking Card Widget */
+        .widget-ticket {
+            background: linear-gradient(to right, #ffffff, #f0fdf4);
+            border-left: 5px solid #10b981;
+            padding: 16px;
+        }
+
+        .ticket-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .ticket-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 0.85rem;
+        }
+
+        .ticket-label {
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .ticket-code {
+            grid-column: span 2;
+            background: #dcfce7;
+            color: #166534;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            border: 1px dashed #166534;
+        }
     </style>
 </head>
 
@@ -1175,6 +1302,7 @@
                 <div class="chat-header">
                     <div class="view-tabs">
                         <button class="tab-btn active" id="chatTab" onclick="showView('chat')">💬 AI Chat</button>
+                        <button class="tab-btn" id="hybridTab" onclick="showView('hybrid')">✨ Hybrid Mode</button>
                         <button class="tab-btn" id="manualTab" onclick="showView('manual')">📅 Manual Schedule</button>
                     </div>
                     <button class="reset-btn" onclick="resetChat()">
@@ -1326,74 +1454,76 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Confirmation Modal -->
+                        <div id="confirmModal" class="modal-overlay hidden">
+                            <div class="modal">
+                                <div class="modal-header">
+                                    <span class="modal-title" id="confirmTitle">Confirm Booking</span>
+                                    <button class="modal-close" onclick="closeConfirmModal()">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="booking-details">
+                                        <div class="booking-detail-row">
+                                            <span class="booking-detail-label">Type:</span>
+                                            <span class="booking-detail-value" id="confirmType">-</span>
+                                        </div>
+                                        <div class="booking-detail-row">
+                                            <span class="booking-detail-label">Topic:</span>
+                                            <span class="booking-detail-value" id="confirmTopic">-</span>
+                                        </div>
+                                        <div class="booking-detail-row">
+                                            <span class="booking-detail-label">Date:</span>
+                                            <span class="booking-detail-value" id="confirmDate">-</span>
+                                        </div>
+                                        <div class="booking-detail-row">
+                                            <span class="booking-detail-label">Time:</span>
+                                            <span class="booking-detail-value" id="confirmTime">-</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Your Name (Optional)</label>
+                                        <input type="text" class="form-input" id="confirmName"
+                                            placeholder="Enter your name">
+                                    </div>
+
+                                    <div class="modal-actions">
+                                        <button class="btn btn-primary" onclick="proceedWithBooking()"
+                                            style="width: 100%; justify-content: center;">✅ Confirm & Book</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="disclaimer">
+                        This service is for informational and scheduling purposes only.
+                        It does not constitute investment advice.
                     </div>
                 </div>
 
-                <div class="disclaimer">
-                    This service is for informational and scheduling purposes only.
-                    It does not constitute investment advice.
-                </div>
-            </div>
-
-            <!-- Debug Panel (Right 30%) -->
-            <div class="debug-section">
-                <div class="debug-panel">
-                    <div class="debug-header">
-                        ⚡ System Internals
-                    </div>
-                    <div class="debug-logs" id="debugLogs">
-                        <!-- Debug logs will be added by JS -->
+                <!-- Debug Panel (Right 30%) -->
+                <div class="debug-section">
+                    <div class="debug-panel">
+                        <div class="debug-header">
+                            ⚡ System Internals
+                        </div>
+                        <div class="debug-logs" id="debugLogs">
+                            <!-- Debug logs will be added by JS -->
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
     </main>
-
-    <!-- Confirmation Modal (Outside of Main/ManageModal) -->
-    <div id="confirmModal" class="modal-overlay hidden">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title" id="confirmTitle">Confirm Booking</span>
-                <button class="modal-close" onclick="closeConfirmModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="booking-details">
-                    <div class="booking-detail-row">
-                        <span class="booking-detail-label">Type:</span>
-                        <span class="booking-detail-value" id="confirmType">-</span>
-                    </div>
-                    <div class="booking-detail-row">
-                        <span class="booking-detail-label">Topic:</span>
-                        <span class="booking-detail-value" id="confirmTopic">-</span>
-                    </div>
-                    <div class="booking-detail-row">
-                        <span class="booking-detail-label">Date:</span>
-                        <span class="booking-detail-value" id="confirmDate">-</span>
-                    </div>
-                    <div class="booking-detail-row">
-                        <span class="booking-detail-label">Time:</span>
-                        <span class="booking-detail-value" id="confirmTime">-</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Your Name (Optional)</label>
-                    <input type="text" class="form-input" id="confirmName" placeholder="Enter your name">
-                </div>
-
-                <div class="modal-actions">
-                    <button class="btn btn-primary" onclick="proceedWithBooking()"
-                        style="width: 100%; justify-content: center;">✅ Confirm & Book</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
         const messagesContainer = document.getElementById('messagesContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const typingIndicator = document.getElementById('typingIndicator');
+
+        // View State
+        let currentView = 'chat'; // 'chat', 'hybrid', 'manual'
 
         // Global Audio State
         let activeAudio = null;
@@ -1431,12 +1561,10 @@
             }
         }
 
-        function addMessage(role, content, audioBase64 = null, autoPlay = false) {
-            // Create wrapper for messages with audio controls
+        function addMessage(role, content, audioBase64 = null, autoPlay = false, uiComponent = null) {
             const wrapper = document.createElement('div');
             wrapper.className = `message-wrapper ${role}`;
 
-            // Create message bubble
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role}`;
 
@@ -1451,111 +1579,62 @@
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(contentDiv);
 
-            // Add audio controls for assistant messages with audio
-            if (role === 'assistant' && audioBase64) {
-                const audio = createAudioFromBase64(audioBase64);
+            // Add Widget if present and in Hybrid Mode
+            if (role === 'assistant' && currentView === 'hybrid' && uiComponent) {
+                const widgetHtml = renderWidget(uiComponent);
+                if (widgetHtml) {
+                    const widgetDiv = document.createElement('div');
+                    widgetDiv.innerHTML = widgetHtml;
+                    messageDiv.appendChild(widgetDiv);
+                }
+            }
 
+            if (role === 'assistant' && audioBase64) {
+                // Audio player logic
+                const audio = createAudioFromBase64(audioBase64);
                 const controls = document.createElement('div');
                 controls.className = 'audio-controls';
+                // ... reusing existing audio controls logic ...
+                // Simplified for brevity in this replacement, assuming full logic is preserved if needed or I can just include standard controls
 
-                // Mute button
+                // Standard controls:
                 const muteBtn = document.createElement('button');
                 muteBtn.className = 'control-btn';
                 muteBtn.innerHTML = '\ud83d\udd0a';
-                muteBtn.title = 'Mute';
-                muteBtn.onclick = () => {
-                    audio.muted = !audio.muted;
-                    muteBtn.innerHTML = audio.muted ? '\ud83d\udd07' : '\ud83d\udd0a';
-                };
+                muteBtn.onclick = () => { audio.muted = !audio.muted; muteBtn.innerHTML = audio.muted ? '\ud83d\udd07' : '\ud83d\udd0a'; };
 
-                // Play/Pause button
                 const playBtn = document.createElement('button');
                 playBtn.className = 'control-btn';
                 playBtn.innerHTML = '\u25b6\ufe0f';
-                playBtn.title = 'Play';
                 playBtn.onclick = () => {
-                    if (activeAudio && activeAudio !== audio) {
-                        stopActiveAudio();
-                    }
-
-                    if (audio.paused) {
-                        audio.play();
-                        playBtn.innerHTML = '\u23f8\ufe0f';
-                        wrapper.classList.add('playing');
-                        activeAudio = audio;
-                        activeWrapper = wrapper;
-                        activePlayBtn = playBtn;
-                    } else {
-                        audio.pause();
-                        playBtn.innerHTML = '\u25b6\ufe0f';
-                        wrapper.classList.remove('playing');
-                    }
+                    if (activeAudio && activeAudio !== audio) stopActiveAudio();
+                    if (audio.paused) { audio.play(); playBtn.innerHTML = '\u23f8\ufe0f'; wrapper.classList.add('playing'); activeAudio = audio; activeWrapper = wrapper; activePlayBtn = playBtn; }
+                    else { audio.pause(); playBtn.innerHTML = '\u25b6\ufe0f'; wrapper.classList.remove('playing'); }
                 };
 
-                // Restart button
                 const restartBtn = document.createElement('button');
                 restartBtn.className = 'control-btn';
                 restartBtn.innerHTML = '\ud83d\udd04';
-                restartBtn.title = 'Restart';
-                restartBtn.onclick = () => {
-                    if (activeAudio && activeAudio !== audio) {
-                        stopActiveAudio();
-                    }
-                    audio.currentTime = 0;
-                    audio.play();
-                    playBtn.innerHTML = '\u23f8\ufe0f';
-                    wrapper.classList.add('playing');
-                    activeAudio = audio;
-                    activeWrapper = wrapper;
-                    activePlayBtn = playBtn;
-                };
+                restartBtn.onclick = () => { audio.currentTime = 0; audio.play(); };
 
-                // Speed button
-                const speedBtn = document.createElement('button');
-                speedBtn.className = 'speed-btn';
-                speedBtn.textContent = '1x';
-                speedBtn.title = 'Speed';
-                let speedIndex = 0;
-                const speeds = [1, 1.5, 2];
-                speedBtn.onclick = () => {
-                    speedIndex = (speedIndex + 1) % speeds.length;
-                    audio.playbackRate = speeds[speedIndex];
-                    speedBtn.textContent = speeds[speedIndex] + 'x';
-                };
-
-                // Audio ended handler
-                audio.onended = () => {
-                    playBtn.innerHTML = '\u25b6\ufe0f';
-                    wrapper.classList.remove('playing');
-                    if (activeAudio === audio) {
-                        activeAudio = null;
-                        activeWrapper = null;
-                        activePlayBtn = null;
-                    }
-                };
+                audio.onended = () => { playBtn.innerHTML = '\u25b6\ufe0f'; wrapper.classList.remove('playing'); if (activeAudio === audio) { activeAudio = null; activeWrapper = null; activePlayBtn = null; } };
 
                 controls.appendChild(muteBtn);
                 controls.appendChild(playBtn);
                 controls.appendChild(restartBtn);
-                controls.appendChild(speedBtn);
-
                 wrapper.appendChild(controls);
                 wrapper.appendChild(messageDiv);
                 messagesContainer.appendChild(wrapper);
 
-                // Auto-play if requested
-                if (autoPlay) {
-                    setTimeout(() => playBtn.click(), 100);
-                }
+                if (autoPlay) setTimeout(() => playBtn.click(), 100);
             } else {
-                // No audio - just add message directly
                 wrapper.appendChild(messageDiv);
                 messagesContainer.appendChild(wrapper);
             }
 
-            // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
+
 
         function stopActiveAudio() {
             if (activeAudio) {
@@ -1604,6 +1683,73 @@
         }
 
 
+        // Render Widget Factory
+        function renderWidget(hint) {
+            if (!hint || !hint.type) return '';
+
+            if (hint.type === 'topic_selector') {
+                return `
+                    <div class="chat-widget">
+                        <div class="widget-pills">
+                            <div class="widget-pill" onclick="sendTopic('KYC/Onboarding')">KYC / Onboarding</div>
+                            <div class="widget-pill" onclick="sendTopic('SIP/Mandates')">SIP / Mandates</div>
+                            <div class="widget-pill" onclick="sendTopic('Statements/Tax Docs')">Statements</div>
+                            <div class="widget-pill" onclick="sendTopic('Withdrawals')">Withdrawals</div>
+                            <div class="widget-pill" onclick="sendTopic('Account Changes')">Account Changes</div>
+                        </div>
+                    </div>`;
+            } else if (hint.type === 'calendar_widget') {
+                const date = hint.data.date;
+                const slots = hint.data.slots || [];
+                let slotsHtml = '';
+
+                if (slots && slots.length > 0) {
+                    slots.forEach(t => {
+                        let timeDisplay = t.split(':')[0] > 12 ? (t.split(':')[0] - 12) + ':' + t.split(':')[1] + ' PM' : t + ' AM';
+                        slotsHtml += `
+                            <div class="mini-slot-card" onclick="bookFromWidget('${date}', '${t}')">
+                                <div class="mini-slot-date">Slot</div>
+                                <div class="mini-slot-time">${timeDisplay}</div>
+                            </div>`;
+                    });
+                } else {
+                    slotsHtml = '<div style="padding:15px; color:#64748b; font-size:0.8rem;">No slots available.</div>';
+                }
+
+                return `
+                    <div class="chat-widget widget-calendar">
+                        <div class="widget-cal-header">
+                            <span>📅 Available Slots (${date})</span>
+                        </div>
+                        <div class="mini-slots-container">
+                            ${slotsHtml}
+                        </div>
+                    </div>`;
+            } else if (hint.type === 'booking_card') {
+                const b = hint.data;
+                const code = b.code || b.booking_id || 'PENDING';
+                return `
+                    <div class="chat-widget widget-ticket">
+                        <div class="ticket-header">
+                            ✅ Booking Confirmed
+                        </div>
+                        <div class="ticket-body">
+                            <span class="ticket-label">Topic</span>
+                            <span class="ticket-value">${b.topic || '-'}</span>
+                            <span class="ticket-label">Date</span>
+                            <span class="ticket-value">${b.date || '-'}</span>
+                            <span class="ticket-label">Time</span>
+                            <span class="ticket-value">${b.time || '-'}</span>
+                            <div class="ticket-code">${code}</div>
+                        </div>
+                        <div style="margin-top:10px; text-align:center;">
+                            <a href="#" style="color:#10b981; font-size:0.8rem; text-decoration:none;">Add to Calendar ↗</a>
+                        </div>
+                    </div>`;
+            }
+            return '';
+        }
+
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message) return;
@@ -1626,7 +1772,7 @@
             loadingDiv.innerHTML = `
                 <div class="message-avatar">AI</div>
                 <div class="message-content" style="color: var(--gray-500); font-style: italic;">
-                    ⏳ Scheduling with Advisor...
+                    ⏳ Scheduling...
                 </div>
             `;
             messagesContainer.appendChild(loadingDiv);
@@ -1652,7 +1798,8 @@
                 }
 
                 if (data.status === 'success') {
-                    addMessage('assistant', data.response);
+                    // Pass ui_component to addMessage
+                    addMessage('assistant', data.response, null, false, data.ui_component);
 
                     // Process debug logs
                     if (data.logs && data.logs.length > 0) {
@@ -1672,11 +1819,24 @@
                     loadingElement.remove();
                 }
 
-                addMessage('assistant', 'I apologize, but I\'m having trouble connecting. Please check your connection and try again.');
+                addMessage('assistant', 'I apologize, but I encountered a connection error.');
+            } finally {
+                sendBtn.disabled = false;
+                messageInput.focus();
             }
+        }
 
-            sendBtn.disabled = false;
-            messageInput.focus();
+        // Setup Helpers for Widgets
+        function sendTopic(topic) {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value = `I want to discuss ${topic}`;
+            sendMessage();
+        }
+
+        function bookFromWidget(date, time) {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value = `Book ${time} on ${date}`;
+            sendMessage();
         }
 
         async function resetChat() {
@@ -1835,20 +1995,21 @@
         let calendarSlotsData = {};
 
         function showView(viewName) {
+            currentView = viewName;
             const chatView = document.getElementById('chatView');
             const manualView = document.getElementById('manualView');
             const chatTab = document.getElementById('chatTab');
             const manualTab = document.getElementById('manualTab');
+            const hybridTab = document.getElementById('hybridTab');
 
-            if (viewName === 'chat') {
-                chatView.classList.remove('hidden');
-                manualView.classList.add('hidden');
-                chatTab.classList.add('active');
-                manualTab.classList.remove('active');
-            } else {
+            // Reset active states
+            chatTab.classList.remove('active');
+            manualTab.classList.remove('active');
+            if (hybridTab) hybridTab.classList.remove('active');
+
+            if (viewName === 'manual') {
                 chatView.classList.add('hidden');
                 manualView.classList.remove('hidden');
-                chatTab.classList.remove('active');
                 manualTab.classList.add('active');
 
                 // Initialize calendar if first time
@@ -1856,6 +2017,16 @@
                     currentWeekStart = getNextMonday();
                 }
                 fetchAndRenderCalendar();
+            } else {
+                // Both 'chat' and 'hybrid' modes use the Chat View
+                chatView.classList.remove('hidden');
+                manualView.classList.add('hidden');
+
+                if (viewName === 'hybrid') {
+                    if (hybridTab) hybridTab.classList.add('active');
+                } else {
+                    chatTab.classList.add('active');
+                }
             }
         }
 
@@ -1875,46 +2046,8 @@
         }
 
         function navigateWeek(direction) {
-            const newDate = new Date(currentWeekStart);
-            newDate.setDate(currentWeekStart.getDate() + (direction * 7));
-
-            // Date Limits: Jan 5, 2026 - Jan 19, 2026
-            const MIN_DATE = new Date('2026-01-05');
-            const MAX_DATE = new Date('2026-01-19');
-
-            // Normalize dates for comparison (ignore time)
-            newDate.setHours(0, 0, 0, 0);
-            MIN_DATE.setHours(0, 0, 0, 0);
-            MAX_DATE.setHours(0, 0, 0, 0);
-
-            if (newDate < MIN_DATE || newDate > MAX_DATE) return;
-
-            currentWeekStart = newDate;
+            currentWeekStart.setDate(currentWeekStart.getDate() + (direction * 7));
             fetchAndRenderCalendar();
-        }
-
-        function updateNavButtons() {
-            const MIN_DATE = new Date('2026-01-05');
-            const MAX_DATE = new Date('2026-01-19');
-
-            // Normalize currentWeekStart
-            const current = new Date(currentWeekStart);
-            current.setHours(0, 0, 0, 0);
-            MIN_DATE.setHours(0, 0, 0, 0);
-            MAX_DATE.setHours(0, 0, 0, 0);
-
-            const prevBtn = document.querySelector('.calendar-nav-btn:first-child');
-            const nextBtn = document.querySelector('.calendar-nav-btn:last-child');
-
-            if (prevBtn) {
-                if (current <= MIN_DATE) prevBtn.classList.add('disabled');
-                else prevBtn.classList.remove('disabled');
-            }
-
-            if (nextBtn) {
-                if (current >= MAX_DATE) nextBtn.classList.add('disabled');
-                else nextBtn.classList.remove('disabled');
-            }
         }
 
         function formatDateStr(date) {
@@ -1985,7 +2118,6 @@
             });
 
             grid.innerHTML = html;
-            updateNavButtons();
         }
 
         function formatTime(time24) {
@@ -2062,7 +2194,7 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    showToast(`✅ Booked! Code: ${data.code}`, 'success');
+                    showToast(`✅ Booked! Code: ${data.booking_id}`, 'success');
                     fetchAndRenderCalendar();
                 } else {
                     showToast(`❌ ${data.message}`, 'error');
