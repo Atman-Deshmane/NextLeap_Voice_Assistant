@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environment Variables
+.env
+
+# Database
+store.json
+
+# History and Logs
+history/*
+!history/.keep
+*.log
+
+# System
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Agent Artifacts
+brain/
+.gemini/

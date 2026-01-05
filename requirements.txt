@@ -1,0 +1,18 @@
+# HDFC Mutual Funds Advisor Scheduler - Dependencies
+
+# Web Framework
+flask>=3.0.0
+
+# AI Model
+google-genai>=1.0.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# HTTP Requests (for n8n webhook)
+requests>=2.31.0
+
+# Google Calendar API
+google-auth>=2.25.0
+google-auth-oauthlib>=1.2.0
+google-api-python-client>=2.110.0
