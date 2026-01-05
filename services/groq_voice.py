@@ -54,6 +54,37 @@ def transcribe_audio(audio_file_object) -> str:
         raise
 
 
+def clean_text_for_speech(text: str) -> str:
+    """
+    Clean text for natural speech by removing markdown formatting.
+    
+    Args:
+        text: Raw text with potential markdown
+        
+    Returns:
+        Clean text suitable for TTS
+    """
+    import re
+    
+    # Remove markdown formatting characters
+    cleaned = re.sub(r'[*#_`]', '', text)
+    
+    # Remove markdown links [text](url) -> text
+    cleaned = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', cleaned)
+    
+    # Remove standalone URLs
+    cleaned = re.sub(r'https?://\S+', '', cleaned)
+    
+    # Remove bullet points
+    cleaned = re.sub(r'^[\s]*[-•]\s*', '', cleaned, flags=re.MULTILINE)
+    
+    # Collapse multiple spaces/newlines
+    cleaned = re.sub(r'\n+', '. ', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned)
+    
+    return cleaned.strip()
+
+
 def generate_audio(text: str) -> Optional[bytes]:
     """
     Generate speech audio from text using Orpheus TTS.
@@ -66,10 +97,13 @@ def generate_audio(text: str) -> Optional[bytes]:
     """
     client = _get_client()
     
+    # Clean markdown for natural speech
+    clean_text = clean_text_for_speech(text)
+    
     try:
         response = client.audio.speech.create(
             model="canopylabs/orpheus-v1-english",
-            input=text,
+            input=clean_text,
             voice="hannah",
             response_format="wav"
         )

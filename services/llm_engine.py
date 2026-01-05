@@ -13,7 +13,7 @@ from google.genai import types
 from services.db_manager import (
     check_availability,
     book_slot,
-    cancel_slot,
+    cancel_booking,
     add_to_waitlist,
     find_booking_by_name_and_time,
     get_all_available_dates
@@ -240,7 +240,7 @@ class LLMEngine:
         function_map = {
             "check_availability": check_availability,
             "book_slot": book_slot,
-            "cancel_slot": cancel_slot,
+            "cancel_slot": cancel_booking,
             "add_to_waitlist": add_to_waitlist,
             "get_all_available_dates": get_all_available_dates,
             "find_booking_by_name_and_time": find_booking_by_name_and_time

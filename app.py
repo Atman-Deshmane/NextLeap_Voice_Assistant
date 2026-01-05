@@ -155,9 +155,18 @@ def voice():
         audio_bytes = groq_voice.generate_audio(agent_text)
         
         audio_base64 = None
+        audio_filepath = None
         if audio_bytes:
             audio_base64 = groq_voice.audio_to_base64(audio_bytes)
             logger.add_log("✅ Audio generated successfully", "success")
+            
+            # Save audio file to disk
+            from services import history_manager
+            audio_filepath = history_manager.save_audio_file(audio_bytes, session_id)
+            if audio_filepath:
+                logger.add_log(f"💾 Audio saved: {audio_filepath}", "success")
+                # Update session history with audio filepath
+                history_manager.update_last_turn_audio(session_id, audio_filepath)
         else:
             logger.add_log("⚠️ TTS unavailable, text-only response", "warning")
         
@@ -166,6 +175,7 @@ def voice():
             "user_text": user_text,
             "agent_text": agent_text,
             "audio_base64": audio_base64,
+            "audio_file": audio_filepath,
             "logs": g.logs
         })
         
@@ -208,6 +218,223 @@ def health():
         "status": "healthy",
         "service": "HDFC Mutual Funds Advisor Scheduler"
     })
+
+
+# ============================================
+# Manual Calendar API Endpoints
+# ============================================
+
+@app.route("/api/slots", methods=["GET"])
+def get_slots():
+    """
+    Get slot statuses for a date range.
+    
+    Query Params:
+        start_date: Start date (YYYY-MM-DD)
+        end_date: End date (YYYY-MM-DD)
+        
+    Returns:
+        {"2026-01-07": {"14:00": {"status": "available", "waitlist_count": 0}}}
+    """
+    try:
+        start_date = request.args.get("start_date")
+        end_date = request.args.get("end_date")
+        
+        if not start_date or not end_date:
+            return jsonify({
+                "status": "error",
+                "message": "start_date and end_date are required"
+            }), 400
+        
+        from services import db_manager
+        slots = db_manager.get_slots_with_status(start_date, end_date)
+        
+        return jsonify({
+            "status": "success",
+            "slots": slots
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route("/api/manual/book", methods=["POST"])
+def manual_book():
+    """
+    Book a slot directly (without LLM).
+    
+    Body: {"date": "...", "time": "...", "topic": "...", "user_alias": "..."}
+    """
+    try:
+        data = request.get_json()
+        
+        date_str = data.get("date")
+        time_str = data.get("time")
+        topic = data.get("topic", "General")
+        user_alias = data.get("user_alias", "Anonymous")
+        
+        if not date_str or not time_str:
+            return jsonify({
+                "status": "error",
+                "message": "date and time are required"
+            }), 400
+        
+        from services import db_manager
+        result = db_manager.book_slot(date_str, time_str, topic, user_alias)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route("/api/manual/waitlist", methods=["POST"])
+def manual_waitlist():
+    """
+    Add to waitlist directly (without LLM).
+    
+    Body: {"date": "...", "time": "...", "topic": "...", "user_alias": "..."}
+    """
+    try:
+        data = request.get_json()
+        
+        date_str = data.get("date")
+        time_str = data.get("time")
+        topic = data.get("topic", "General")
+        user_alias = data.get("user_alias", "Anonymous")
+        
+        if not date_str or not time_str:
+            return jsonify({
+                "status": "error",
+                "message": "date and time are required"
+            }), 400
+        
+        from services import db_manager
+        result = db_manager.add_to_waitlist(date_str, time_str, topic, user_alias)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route("/api/booking/lookup", methods=["GET"])
+def lookup_booking():
+    """Look up a booking or waitlist entry by its code."""
+    try:
+        booking_code = request.args.get("code")
+        
+        if not booking_code:
+            return jsonify({
+                "status": "error",
+                "message": "Code is required"
+            }), 400
+        
+        from services import db_manager
+        result = db_manager.lookup_any(booking_code.upper())
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route("/api/booking/modify", methods=["POST"])
+def modify_booking():
+    """Modify an existing booking."""
+    try:
+        data = request.get_json()
+        
+        booking_code = data.get("code")
+        new_topic = data.get("topic")
+        new_alias = data.get("user_alias")
+        
+        if not booking_code:
+            return jsonify({
+                "status": "error",
+                "message": "Booking code is required"
+            }), 400
+        
+        from services import db_manager
+        result = db_manager.modify_booking(booking_code.upper(), new_topic, new_alias)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route("/api/booking/reschedule", methods=["POST"])
+def reschedule_booking():
+    """Reschedule a booking to a new time slot."""
+    try:
+        data = request.get_json()
+        
+        booking_code = data.get("code")
+        new_date = data.get("date")
+        new_time = data.get("time")
+        
+        if not booking_code or not new_date or not new_time:
+            return jsonify({
+                "status": "error",
+                "message": "code, date, and time are required"
+            }), 400
+        
+        from services import db_manager
+        result = db_manager.reschedule_booking(booking_code.upper(), new_date, new_time)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route("/api/booking/cancel", methods=["POST"])
+def cancel_booking_api():
+    """Cancel a booking or waitlist entry by its code."""
+    try:
+        data = request.get_json()
+        code = data.get("code")
+        entry_type = data.get("type", "booking")  # Can be 'booking' or 'waitlist'
+        
+        if not code:
+            return jsonify({
+                "status": "error",
+                "message": "Code is required"
+            }), 400
+        
+        from services import db_manager
+        
+        if entry_type == "waitlist":
+            result = db_manager.cancel_waitlist(code.upper())
+        else:
+            result = db_manager.cancel_booking(code.upper())
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 
 if __name__ == "__main__":

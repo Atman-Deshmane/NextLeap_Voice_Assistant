@@ -125,11 +125,21 @@
         /* Chat Section (Left) */
         .chat-section {
             flex: 0 0 70%;
+            transition: flex 0.3s ease;
+        }
+
+        .chat-section.full-width {
+            flex: 0 0 100%;
         }
 
         /* Debug Section (Right) */
         .debug-section {
             flex: 0 0 calc(30% - 1.5rem);
+            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         /* Chat Container */
@@ -502,18 +512,167 @@
             }
         }
 
-        /* Speaker Button */
-        .speaker-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0.25rem;
-            color: var(--gray-500);
-            transition: color 0.2s ease;
+        /* Message Wrapper for Audio Controls */
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+            margin-bottom: 0.5rem;
+            position: relative;
         }
 
-        .speaker-btn:hover {
+        .message-wrapper.assistant {
+            align-self: flex-start;
+        }
+
+        .message-wrapper.user {
+            align-self: flex-end;
+        }
+
+        .message-wrapper .message {
+            margin-bottom: 0;
+            max-width: 100%;
+        }
+
+        /* Audio Controls Bar */
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 4px;
+            padding-right: 8px;
+            height: 24px;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .message-wrapper:hover .audio-controls,
+        .message-wrapper.playing .audio-controls {
+            opacity: 1;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray-500);
+            padding: 2px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .control-btn:hover {
             color: var(--hdfc-blue);
+            transform: scale(1.15);
+        }
+
+        .control-btn.active {
+            color: var(--hdfc-blue);
+        }
+
+        .speed-btn {
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: var(--gray-200);
+            color: var(--gray-700);
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 28px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .speed-btn:hover {
+            background: var(--hdfc-blue);
+            color: white;
+        }
+
+        /* Toggle Debug Button */
+        .toggle-debug-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-debug-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Listening Overlay */
+        .listening-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .listening-overlay.hidden {
+            display: none !important;
+        }
+
+        .listening-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: listeningPulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 60px rgba(231, 76, 60, 0.5);
+        }
+
+        .listening-circle svg {
+            width: 50px;
+            height: 50px;
+            color: white;
+        }
+
+        .listening-text {
+            color: white;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            font-weight: 500;
+        }
+
+        .listening-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        @keyframes listeningPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 60px rgba(231, 76, 60, 0.5);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 80px rgba(231, 76, 60, 0.7);
+            }
         }
 
         /* Disclaimer */
@@ -522,6 +681,428 @@
             padding: 1rem;
             font-size: 0.75rem;
             color: var(--gray-500);
+        }
+
+        /* View Tabs - Dark Segmented Control */
+        .view-tabs {
+            display: flex;
+            gap: 0;
+            background: #374151;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1.25rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #9ca3af;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .tab-btn.active {
+            background: #4b5563;
+            color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #d1d5db;
+        }
+
+        /* Chat View Container */
+        #chatView {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #chatView.hidden {
+            display: none;
+        }
+
+        /* Manual View */
+        .manual-view {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Topic Pills */
+        .topic-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .topic-pill {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--gray-300);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .topic-pill:hover {
+            border-color: var(--hdfc-blue);
+            color: var(--hdfc-blue);
+        }
+
+        .topic-pill.active {
+            background: var(--hdfc-blue);
+            border-color: var(--hdfc-blue);
+            color: white;
+        }
+
+        /* Calendar Container */
+        .calendar-container {
+            flex: 1;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav-btn {
+            background: var(--gray-200);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--gray-300);
+        }
+
+        .calendar-week-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-cell {
+            padding: 0.25rem;
+            text-align: center;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            height: 58px;
+            /* Fixed height to prevent jumping */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calendar-nav-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .calendar-header-cell {
+            background: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .calendar-time-cell {
+            background: var(--gray-50);
+            font-weight: 500;
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slot-cell {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .slot-available {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .slot-available:hover {
+            background: #10b981;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .slot-booked {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .slot-booked:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .slot-past {
+            background: var(--gray-100);
+            color: var(--gray-400);
+            cursor: not-allowed;
+        }
+
+        .waitlist-badge {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gray-900);
+            color: white;
+            padding: 1rem 1.5rem;
+            padding-right: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        .toast-close {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--gray-800);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+            line-height: 1;
+        }
+
+        .modal-body {
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--hdfc-blue);
+        }
+
+        .booking-details {
+            background: var(--gray-50);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .booking-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .booking-detail-label {
+            color: var(--gray-600);
+        }
+
+        .booking-detail-value {
+            font-weight: 500;
+            color: var(--gray-800);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--hdfc-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a5bb0;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-100);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .manage-booking-btn {
+            background: var(--gray-200);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .manage-booking-btn:hover {
+            background: var(--gray-300);
         }
 
         /* Responsive */
@@ -566,82 +1147,247 @@
             <div class="header-badge">
                 🔒 Secure Chat
             </div>
+            <button class="toggle-debug-btn" id="toggleDebugBtn" onclick="toggleDebugPanel()">
+                ⚡ Show Internals
+            </button>
         </div>
     </header>
+
+    <!-- Listening Overlay -->
+    <div class="listening-overlay hidden" id="listeningOverlay" onclick="stopRecording()">
+        <div class="listening-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+                <path
+                    d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+            </svg>
+        </div>
+        <div class="listening-text">Listening...</div>
+        <div class="listening-hint">Tap anywhere to stop</div>
+    </div>
 
     <!-- Main Content -->
     <main class="main-container">
         <!-- Chat Section (Left 70%) -->
         <div class="chat-section">
             <div class="chat-container">
-                <!-- Chat Header -->
+                <!-- Chat Header with Tabs -->
                 <div class="chat-header">
-                    <div class="chat-status">
-                        <div class="status-dot"></div>
-                        <span>AI Assistant Online</span>
+                    <div class="view-tabs">
+                        <button class="tab-btn active" id="chatTab" onclick="showView('chat')">💬 AI Chat</button>
+                        <button class="tab-btn" id="manualTab" onclick="showView('manual')">📅 Manual Schedule</button>
                     </div>
                     <button class="reset-btn" onclick="resetChat()">
                         New Conversation
                     </button>
                 </div>
 
-                <!-- Messages -->
-                <div class="messages-container" id="messagesContainer">
-                    <!-- Welcome message will be added by JS -->
-                </div>
+                <!-- Chat View -->
+                <div id="chatView">
+                    <!-- Messages -->
+                    <div class="messages-container" id="messagesContainer">
+                        <!-- Welcome message will be added by JS -->
+                    </div>
 
-                <!-- Typing Indicator -->
-                <div class="typing-indicator" id="typingIndicator">
-                    <div class="message-avatar"
-                        style="background: linear-gradient(135deg, var(--hdfc-blue) 0%, var(--hdfc-blue-light) 100%); color: white;">
-                        AI</div>
-                    <div class="typing-dots">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="message-avatar"
+                            style="background: linear-gradient(135deg, var(--hdfc-blue) 0%, var(--hdfc-blue-light) 100%); color: white;">
+                            AI</div>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <textarea class="input-field" id="messageInput" placeholder="Type your message..." rows="1"
+                                onkeydown="handleKeyDown(event)"></textarea>
+                            <button class="mic-btn" id="micBtn" onclick="toggleRecording()">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+                                    <path
+                                        d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+                                </svg>
+                            </button>
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Input Area -->
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <textarea class="input-field" id="messageInput" placeholder="Type your message..." rows="1"
-                            onkeydown="handleKeyDown(event)"></textarea>
-                        <button class="mic-btn" id="micBtn" onclick="toggleRecording()">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-                                <path
-                                    d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-                            </svg>
-                        </button>
-                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                            </svg>
-                        </button>
+                <!-- Manual View -->
+                <div id="manualView" class="manual-view hidden">
+                    <!-- Topic Pills -->
+                    <div class="topic-selector">
+                        <span style="color: var(--gray-600); font-size: 0.85rem; margin-right: 0.5rem;">Select
+                            Topic:</span>
+                        <button class="topic-pill" data-topic="KYC/Onboarding" onclick="selectTopic(this)">📋
+                            KYC/Onboarding</button>
+                        <button class="topic-pill" data-topic="SIP/Mandates" onclick="selectTopic(this)">💰
+                            SIP/Mandates</button>
+                        <button class="topic-pill" data-topic="Statements/Tax Documents" onclick="selectTopic(this)">📄
+                            Statements/Tax</button>
+                        <button class="topic-pill" data-topic="Withdrawals" onclick="selectTopic(this)">🏦
+                            Withdrawals</button>
+                        <button class="topic-pill" data-topic="Account Changes" onclick="selectTopic(this)">⚙️ Account
+                            Changes</button>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="calendar-container">
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" onclick="navigateWeek(-1)">◀</button>
+                            <span class="calendar-week-label" id="weekLabel">Jan 6 - Jan 10</span>
+                            <button class="calendar-nav-btn" onclick="navigateWeek(1)">▶</button>
+                            <button class="manage-booking-btn" onclick="openManageModal()" style="margin-left: auto;">📝
+                                Manage Booking</button>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendar will be rendered by JS -->
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="disclaimer">
-                This service is for informational and scheduling purposes only.
-                It does not constitute investment advice.
-            </div>
-        </div>
+                <!-- Manage Booking Modal -->
+                <div id="manageModal" class="modal-overlay hidden">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <span class="modal-title" id="modalTitle">Manage Booking</span>
+                            <button class="modal-close" onclick="closeManageModal()">×</button>
+                        </div>
+                        <div class="modal-body" id="modalBody">
+                            <!-- Lookup Form -->
+                            <div id="lookupForm">
+                                <div class="form-group">
+                                    <label class="form-label">Enter Booking Code</label>
+                                    <input type="text" class="form-input" id="bookingCodeInput" placeholder="NL-XXXX"
+                                        style="text-transform: uppercase;">
+                                </div>
+                                <button class="btn btn-primary" onclick="lookupBooking()" style="width: 100%;">Find
+                                    Booking</button>
+                            </div>
 
-        <!-- Debug Panel (Right 30%) -->
-        <div class="debug-section">
-            <div class="debug-panel">
-                <div class="debug-header">
-                    ⚡ System Internals
+                            <!-- Booking Details (hidden by default) -->
+                            <div id="bookingDetails" class="hidden">
+                                <div class="booking-details">
+                                    <div class="booking-detail-row">
+                                        <span class="booking-detail-label">Code:</span>
+                                        <span class="booking-detail-value" id="detailCode">-</span>
+                                    </div>
+                                    <div class="booking-detail-row">
+                                        <span class="booking-detail-label">Date:</span>
+                                        <span class="booking-detail-value" id="detailDate">-</span>
+                                    </div>
+                                    <div class="booking-detail-row">
+                                        <span class="booking-detail-label">Time:</span>
+                                        <span class="booking-detail-value" id="detailTime">-</span>
+                                    </div>
+                                    <div class="booking-detail-row">
+                                        <span class="booking-detail-label">Topic:</span>
+                                        <span class="booking-detail-value" id="detailTopic">-</span>
+                                    </div>
+                                    <div class="booking-detail-row">
+                                        <span class="booking-detail-label">Name:</span>
+                                        <span class="booking-detail-value" id="detailName">-</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group booking-only">
+                                    <label class="form-label">Change Topic</label>
+                                    <select class="form-input" id="editTopic">
+                                        <option value="">-- Keep Current --</option>
+                                        <option value="KYC/Onboarding">KYC/Onboarding</option>
+                                        <option value="SIP/Mandates">SIP/Mandates</option>
+                                        <option value="Statements/Tax Documents">Statements/Tax Documents</option>
+                                        <option value="Withdrawals">Withdrawals</option>
+                                        <option value="Account Changes">Account Changes</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group booking-only">
+                                    <label class="form-label">Change Name</label>
+                                    <input type="text" class="form-input" id="editName"
+                                        placeholder="Leave empty to keep current">
+                                </div>
+
+                                <div class="modal-actions">
+                                    <button class="btn btn-primary booking-only" onclick="saveBookingChanges()">💾 Save
+                                        Changes</button>
+                                    <button class="btn btn-danger" id="cancelBtn" onclick="deleteBooking()">🗑️
+                                        Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="debug-logs" id="debugLogs">
-                    <!-- Debug logs will be added by JS -->
+
+                <div class="disclaimer">
+                    This service is for informational and scheduling purposes only.
+                    It does not constitute investment advice.
+                </div>
+            </div>
+
+            <!-- Debug Panel (Right 30%) -->
+            <div class="debug-section">
+                <div class="debug-panel">
+                    <div class="debug-header">
+                        ⚡ System Internals
+                    </div>
+                    <div class="debug-logs" id="debugLogs">
+                        <!-- Debug logs will be added by JS -->
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Confirmation Modal (Outside of Main/ManageModal) -->
+    <div id="confirmModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="confirmTitle">Confirm Booking</span>
+                <button class="modal-close" onclick="closeConfirmModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="booking-details">
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Type:</span>
+                        <span class="booking-detail-value" id="confirmType">-</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Topic:</span>
+                        <span class="booking-detail-value" id="confirmTopic">-</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Date:</span>
+                        <span class="booking-detail-value" id="confirmDate">-</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Time:</span>
+                        <span class="booking-detail-value" id="confirmTime">-</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Your Name (Optional)</label>
+                    <input type="text" class="form-input" id="confirmName" placeholder="Enter your name">
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="proceedWithBooking()"
+                        style="width: 100%; justify-content: center;">✅ Confirm & Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const messagesContainer = document.getElementById('messagesContainer');
@@ -649,15 +1395,33 @@
         const sendBtn = document.getElementById('sendBtn');
         const typingIndicator = document.getElementById('typingIndicator');
 
+        // Global Audio State
+        let activeAudio = null;
+        let activeWrapper = null;
+        let activePlayBtn = null;
+
         // Auto-resize textarea
         messageInput.addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
 
-        // Add welcome message on load
-        window.onload = function () {
+        // Add welcome message on load and reset conversation
+        window.onload = async function () {
+            // Reset server-side conversation history on page load/refresh
+            try {
+                await fetch('/api/reset', { method: 'POST' });
+            } catch (error) {
+                console.error('Failed to reset conversation:', error);
+            }
+
             addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+
+            // Default: hide debug panel
+            const debugSection = document.querySelector('.debug-section');
+            const chatSection = document.querySelector('.chat-section');
+            debugSection.classList.add('hidden');
+            chatSection.classList.add('full-width');
         };
 
         function handleKeyDown(event) {
@@ -667,7 +1431,12 @@
             }
         }
 
-        function addMessage(role, content) {
+        function addMessage(role, content, audioBase64 = null, autoPlay = false) {
+            // Create wrapper for messages with audio controls
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-wrapper ${role}`;
+
+            // Create message bubble
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role}`;
 
@@ -677,15 +1446,143 @@
 
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            // Handle line breaks
             contentDiv.innerHTML = content.replace(/\n/g, '<br>');
 
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(contentDiv);
-            messagesContainer.appendChild(messageDiv);
+
+            // Add audio controls for assistant messages with audio
+            if (role === 'assistant' && audioBase64) {
+                const audio = createAudioFromBase64(audioBase64);
+
+                const controls = document.createElement('div');
+                controls.className = 'audio-controls';
+
+                // Mute button
+                const muteBtn = document.createElement('button');
+                muteBtn.className = 'control-btn';
+                muteBtn.innerHTML = '\ud83d\udd0a';
+                muteBtn.title = 'Mute';
+                muteBtn.onclick = () => {
+                    audio.muted = !audio.muted;
+                    muteBtn.innerHTML = audio.muted ? '\ud83d\udd07' : '\ud83d\udd0a';
+                };
+
+                // Play/Pause button
+                const playBtn = document.createElement('button');
+                playBtn.className = 'control-btn';
+                playBtn.innerHTML = '\u25b6\ufe0f';
+                playBtn.title = 'Play';
+                playBtn.onclick = () => {
+                    if (activeAudio && activeAudio !== audio) {
+                        stopActiveAudio();
+                    }
+
+                    if (audio.paused) {
+                        audio.play();
+                        playBtn.innerHTML = '\u23f8\ufe0f';
+                        wrapper.classList.add('playing');
+                        activeAudio = audio;
+                        activeWrapper = wrapper;
+                        activePlayBtn = playBtn;
+                    } else {
+                        audio.pause();
+                        playBtn.innerHTML = '\u25b6\ufe0f';
+                        wrapper.classList.remove('playing');
+                    }
+                };
+
+                // Restart button
+                const restartBtn = document.createElement('button');
+                restartBtn.className = 'control-btn';
+                restartBtn.innerHTML = '\ud83d\udd04';
+                restartBtn.title = 'Restart';
+                restartBtn.onclick = () => {
+                    if (activeAudio && activeAudio !== audio) {
+                        stopActiveAudio();
+                    }
+                    audio.currentTime = 0;
+                    audio.play();
+                    playBtn.innerHTML = '\u23f8\ufe0f';
+                    wrapper.classList.add('playing');
+                    activeAudio = audio;
+                    activeWrapper = wrapper;
+                    activePlayBtn = playBtn;
+                };
+
+                // Speed button
+                const speedBtn = document.createElement('button');
+                speedBtn.className = 'speed-btn';
+                speedBtn.textContent = '1x';
+                speedBtn.title = 'Speed';
+                let speedIndex = 0;
+                const speeds = [1, 1.5, 2];
+                speedBtn.onclick = () => {
+                    speedIndex = (speedIndex + 1) % speeds.length;
+                    audio.playbackRate = speeds[speedIndex];
+                    speedBtn.textContent = speeds[speedIndex] + 'x';
+                };
+
+                // Audio ended handler
+                audio.onended = () => {
+                    playBtn.innerHTML = '\u25b6\ufe0f';
+                    wrapper.classList.remove('playing');
+                    if (activeAudio === audio) {
+                        activeAudio = null;
+                        activeWrapper = null;
+                        activePlayBtn = null;
+                    }
+                };
+
+                controls.appendChild(muteBtn);
+                controls.appendChild(playBtn);
+                controls.appendChild(restartBtn);
+                controls.appendChild(speedBtn);
+
+                wrapper.appendChild(controls);
+                wrapper.appendChild(messageDiv);
+                messagesContainer.appendChild(wrapper);
+
+                // Auto-play if requested
+                if (autoPlay) {
+                    setTimeout(() => playBtn.click(), 100);
+                }
+            } else {
+                // No audio - just add message directly
+                wrapper.appendChild(messageDiv);
+                messagesContainer.appendChild(wrapper);
+            }
 
             // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function stopActiveAudio() {
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio.currentTime = 0;
+            }
+            if (activePlayBtn) {
+                activePlayBtn.innerHTML = '\u25b6\ufe0f';
+            }
+            if (activeWrapper) {
+                activeWrapper.classList.remove('playing');
+            }
+            activeAudio = null;
+            activeWrapper = null;
+            activePlayBtn = null;
+        }
+
+        function createAudioFromBase64(base64Audio) {
+            const audioData = atob(base64Audio);
+            const arrayBuffer = new ArrayBuffer(audioData.length);
+            const view = new Uint8Array(arrayBuffer);
+            for (let i = 0; i < audioData.length; i++) {
+                view[i] = audioData.charCodeAt(i);
+            }
+            const audioBlob = new Blob([arrayBuffer], { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            return new Audio(audioUrl);
         }
 
         function showTyping() {
@@ -828,6 +1725,9 @@
                 isRecording = true;
                 micBtn.classList.add('recording');
 
+                // Show listening overlay
+                document.getElementById('listeningOverlay').classList.remove('hidden');
+
             } catch (error) {
                 console.error('Microphone access denied:', error);
                 addMessage('assistant', '🎤 Please allow microphone access to use voice input.');
@@ -839,6 +1739,9 @@
                 mediaRecorder.stop();
                 isRecording = false;
                 micBtn.classList.remove('recording');
+
+                // Hide listening overlay
+                document.getElementById('listeningOverlay').classList.add('hidden');
             }
         }
 
@@ -882,19 +1785,14 @@
                     // Display user's transcribed message
                     addMessage('user', data.user_text);
 
-                    // Display agent's response
-                    addMessage('assistant', data.agent_text);
+                    // Display agent's response with audio and auto-play
+                    addMessage('assistant', data.agent_text, data.audio_base64, true);
 
                     // Process debug logs
                     if (data.logs && data.logs.length > 0) {
                         data.logs.forEach(log => {
                             addDebugLog(log.timestamp, log.message, log.type);
                         });
-                    }
-
-                    // Play audio if available
-                    if (data.audio_base64) {
-                        playAudio(data.audio_base64);
                     }
                 } else {
                     addMessage('assistant', 'I apologize, but I encountered an error processing your voice. Please try again.');
@@ -912,26 +1810,471 @@
             }
         }
 
-        function playAudio(base64Audio) {
-            try {
-                const audioData = atob(base64Audio);
-                const arrayBuffer = new ArrayBuffer(audioData.length);
-                const view = new Uint8Array(arrayBuffer);
-                for (let i = 0; i < audioData.length; i++) {
-                    view[i] = audioData.charCodeAt(i);
+        function toggleDebugPanel() {
+            const debugSection = document.querySelector('.debug-section');
+            const chatSection = document.querySelector('.chat-section');
+            const toggleBtn = document.getElementById('toggleDebugBtn');
+
+            if (debugSection.classList.contains('hidden')) {
+                debugSection.classList.remove('hidden');
+                chatSection.classList.remove('full-width');
+                toggleBtn.textContent = '⚡ Hide Internals';
+            } else {
+                debugSection.classList.add('hidden');
+                chatSection.classList.add('full-width');
+                toggleBtn.textContent = '⚡ Show Internals';
+            }
+        }
+
+        // ============================================
+        // Manual Calendar Functions
+        // ============================================
+
+        let currentWeekStart = null;
+        let selectedTopic = null;  // No default - user must select
+        let calendarSlotsData = {};
+
+        function showView(viewName) {
+            const chatView = document.getElementById('chatView');
+            const manualView = document.getElementById('manualView');
+            const chatTab = document.getElementById('chatTab');
+            const manualTab = document.getElementById('manualTab');
+
+            if (viewName === 'chat') {
+                chatView.classList.remove('hidden');
+                manualView.classList.add('hidden');
+                chatTab.classList.add('active');
+                manualTab.classList.remove('active');
+            } else {
+                chatView.classList.add('hidden');
+                manualView.classList.remove('hidden');
+                chatTab.classList.remove('active');
+                manualTab.classList.add('active');
+
+                // Initialize calendar if first time
+                if (!currentWeekStart) {
+                    currentWeekStart = getNextMonday();
                 }
+                fetchAndRenderCalendar();
+            }
+        }
 
-                const audioBlob = new Blob([arrayBuffer], { type: 'audio/wav' });
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
-                audio.play();
+        function getNextMonday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilMonday = (8 - dayOfWeek) % 7 || 7;
+            const nextMonday = new Date(today);
+            nextMonday.setDate(today.getDate() + daysUntilMonday);
+            return nextMonday;
+        }
 
-                // Clean up URL after playback
-                audio.onended = () => {
-                    URL.revokeObjectURL(audioUrl);
-                };
+        function selectTopic(btn) {
+            document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            selectedTopic = btn.dataset.topic;
+        }
+
+        function navigateWeek(direction) {
+            const newDate = new Date(currentWeekStart);
+            newDate.setDate(currentWeekStart.getDate() + (direction * 7));
+
+            // Date Limits: Jan 5, 2026 - Jan 19, 2026
+            const MIN_DATE = new Date('2026-01-05');
+            const MAX_DATE = new Date('2026-01-19');
+
+            // Normalize dates for comparison (ignore time)
+            newDate.setHours(0, 0, 0, 0);
+            MIN_DATE.setHours(0, 0, 0, 0);
+            MAX_DATE.setHours(0, 0, 0, 0);
+
+            if (newDate < MIN_DATE || newDate > MAX_DATE) return;
+
+            currentWeekStart = newDate;
+            fetchAndRenderCalendar();
+        }
+
+        function updateNavButtons() {
+            const MIN_DATE = new Date('2026-01-05');
+            const MAX_DATE = new Date('2026-01-19');
+
+            // Normalize currentWeekStart
+            const current = new Date(currentWeekStart);
+            current.setHours(0, 0, 0, 0);
+            MIN_DATE.setHours(0, 0, 0, 0);
+            MAX_DATE.setHours(0, 0, 0, 0);
+
+            const prevBtn = document.querySelector('.calendar-nav-btn:first-child');
+            const nextBtn = document.querySelector('.calendar-nav-btn:last-child');
+
+            if (prevBtn) {
+                if (current <= MIN_DATE) prevBtn.classList.add('disabled');
+                else prevBtn.classList.remove('disabled');
+            }
+
+            if (nextBtn) {
+                if (current >= MAX_DATE) nextBtn.classList.add('disabled');
+                else nextBtn.classList.remove('disabled');
+            }
+        }
+
+        function formatDateStr(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        async function fetchAndRenderCalendar() {
+            const endDate = new Date(currentWeekStart);
+            endDate.setDate(currentWeekStart.getDate() + 4); // Mon-Fri
+
+            // Update week label
+            const startMonth = currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const endMonth = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            document.getElementById('weekLabel').textContent = `${startMonth} - ${endMonth}`;
+
+            try {
+                const response = await fetch(`/api/slots?start_date=${formatDateStr(currentWeekStart)}&end_date=${formatDateStr(endDate)}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    calendarSlotsData = data.slots;
+                    renderCalendar();
+                }
             } catch (error) {
-                console.error('Audio playback error:', error);
+                console.error('Failed to fetch slots:', error);
+            }
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const timeSlots = ['13:00', '14:00', '15:00', '16:00', '17:00'];
+            const days = [];
+
+            // Build day array
+            for (let i = 0; i < 5; i++) {
+                const date = new Date(currentWeekStart);
+                date.setDate(currentWeekStart.getDate() + i);
+                days.push(date);
+            }
+
+            // Build grid HTML
+            let html = '<div class="calendar-cell calendar-header-cell">Time</div>';
+
+            // Header row - day names
+            days.forEach(date => {
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayNum = date.getDate();
+                html += `<div class="calendar-cell calendar-header-cell">${dayName} ${dayNum}</div>`;
+            });
+
+            // Time rows
+            timeSlots.forEach(time => {
+                html += `<div class="calendar-cell calendar-time-cell">${formatTime(time)}</div>`;
+
+                days.forEach(date => {
+                    const dateStr = formatDateStr(date);
+                    const slotData = calendarSlotsData[dateStr]?.[time];
+
+                    if (!slotData) {
+                        html += `<div class="calendar-cell slot-cell slot-past">—</div>`;
+                    } else if (slotData.status === 'available') {
+                        html += `<div class="calendar-cell slot-cell slot-available" onclick="bookSlot('${dateStr}', '${time}')">Book</div>`;
+                    } else {
+                        const waitlist = slotData.waitlist_count > 0 ? `<div class="waitlist-badge">${slotData.waitlist_count} waiting</div>` : '';
+                        html += `<div class="calendar-cell slot-cell slot-booked" onclick="joinWaitlist('${dateStr}', '${time}')">Taken${waitlist}</div>`;
+                    }
+                });
+            });
+
+            grid.innerHTML = html;
+            updateNavButtons();
+        }
+
+        function formatTime(time24) {
+            const [hours, minutes] = time24.split(':');
+            const h = parseInt(hours);
+            const period = h >= 12 ? 'PM' : 'AM';
+            const h12 = h > 12 ? h - 12 : h;
+            return `${h12}:${minutes} ${period}`;
+        }
+
+        // ============================================
+        // Booking Confirmation Modal Logic
+        // ============================================
+
+        let pendingBooking = null;
+
+        function openConfirmModal(type, date, time) {
+            // Validate topic
+            if (!selectedTopic) {
+                showToast('⚠️ Please select a topic first!', 'error');
+                return;
+            }
+
+            pendingBooking = { type, date, time };
+
+            // Populate modal
+            document.getElementById('confirmType').textContent = type === 'booking' ? '📅 Confirmed Booking' : '⏳ Waitlist Entry';
+            document.getElementById('confirmTopic').textContent = selectedTopic;
+            document.getElementById('confirmDate').textContent = date;
+            document.getElementById('confirmTime').textContent = formatTime(time);
+            document.getElementById('confirmName').value = ''; // Reset name input
+
+            // Show modal
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            pendingBooking = null;
+        }
+
+        async function proceedWithBooking() {
+            if (!pendingBooking) return;
+
+            const userAlias = document.getElementById('confirmName').value.trim() || 'Anonymous';
+            const { type, date, time } = pendingBooking;
+
+            closeConfirmModal();
+
+            if (type === 'booking') {
+                await executeBooking(date, time, userAlias);
+            } else {
+                await executeWaitlist(date, time, userAlias);
+            }
+        }
+
+        async function bookSlot(date, time) {
+            openConfirmModal('booking', date, time);
+        }
+
+        async function executeBooking(date, time, name) {
+            try {
+                const response = await fetch('/api/manual/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: date,
+                        time: time,
+                        topic: selectedTopic,
+                        user_alias: name
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showToast(`✅ Booked! Code: ${data.code}`, 'success');
+                    fetchAndRenderCalendar();
+                } else {
+                    showToast(`❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showToast('❌ Failed to book slot.', 'error');
+            }
+        }
+
+        async function joinWaitlist(date, time) {
+            openConfirmModal('waitlist', date, time);
+        }
+
+        async function executeWaitlist(date, time, name) {
+            try {
+                const response = await fetch('/api/manual/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: date,
+                        time: time,
+                        topic: selectedTopic,
+                        user_alias: name
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showToast(`📋 Added to waitlist! ID: ${data.waitlist_id}`, 'success');
+                    fetchAndRenderCalendar();
+                } else {
+                    showToast(`❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showToast('❌ Failed to join waitlist.', 'error');
+            }
+        }
+
+        function showToast(message, type = '', persistent = true) {
+            let toast = document.getElementById('toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast';
+                document.body.appendChild(toast);
+            }
+
+            toast.innerHTML = `
+                <span>${message}</span>
+                <button class="toast-close" onclick="closeToast()">×</button>
+            `;
+            toast.className = `toast ${type}`;
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Auto-close after 15 seconds for errors, persistent for success
+            if (!persistent || type === 'error') {
+                setTimeout(() => closeToast(), type === 'error' ? 5000 : 15000);
+            }
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.remove('show');
+            }
+        }
+
+        // ============================================
+        // Manage Booking Modal Functions
+        // ============================================
+
+        let currentBookingCode = null;
+        let currentEntryType = null;  // 'booking' or 'waitlist'
+
+        function openManageModal() {
+            document.getElementById('manageModal').classList.remove('hidden');
+            document.getElementById('bookingCodeInput').value = '';
+            document.getElementById('lookupForm').classList.remove('hidden');
+            document.getElementById('bookingDetails').classList.add('hidden');
+        }
+
+        function closeManageModal() {
+            document.getElementById('manageModal').classList.add('hidden');
+            currentBookingCode = null;
+        }
+
+        async function lookupBooking() {
+            const code = document.getElementById('bookingCodeInput').value.trim().toUpperCase();
+
+            if (!code) {
+                showToast('⚠️ Please enter a code', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/booking/lookup?code=${code}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    currentBookingCode = code;
+                    currentEntryType = data.type;  // 'booking' or 'waitlist'
+
+                    if (data.type === 'booking') {
+                        const booking = data.booking;
+                        document.getElementById('detailCode').textContent = booking.booking_id;
+                        document.getElementById('detailDate').textContent = booking.date;
+                        document.getElementById('detailTime').textContent = formatTime(booking.time);
+                        document.getElementById('detailTopic').textContent = booking.topic;
+                        document.getElementById('detailName').textContent = booking.user_alias;
+                        document.getElementById('modalTitle').textContent = '📅 Confirmed Booking';
+
+                        // Show edit options for bookings
+                        document.querySelectorAll('.booking-only').forEach(el => el.classList.remove('hidden'));
+                    } else {
+                        const entry = data.entry;
+                        document.getElementById('detailCode').textContent = entry.waitlist_id;
+                        document.getElementById('detailDate').textContent = entry.date;
+                        document.getElementById('detailTime').textContent = `${formatTime(entry.time)} (Position #${entry.position})`;
+                        document.getElementById('detailTopic').textContent = entry.topic;
+                        document.getElementById('detailName').textContent = entry.user_alias;
+                        document.getElementById('modalTitle').textContent = '⏳ Waitlist Entry';
+
+                        // Hide edit options for waitlist
+                        document.querySelectorAll('.booking-only').forEach(el => el.classList.add('hidden'));
+                    }
+
+                    // Clear edit fields
+                    document.getElementById('editTopic').value = '';
+                    document.getElementById('editName').value = '';
+
+                    // Show details, hide lookup form
+                    document.getElementById('lookupForm').classList.add('hidden');
+                    document.getElementById('bookingDetails').classList.remove('hidden');
+                } else {
+                    showToast(`❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showToast('❌ Failed to lookup', 'error');
+            }
+        }
+
+        async function saveBookingChanges() {
+            if (!currentBookingCode) return;
+
+            const newTopic = document.getElementById('editTopic').value;
+            const newName = document.getElementById('editName').value.trim();
+
+            if (!newTopic && !newName) {
+                showToast('⚠️ No changes to save', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/booking/modify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: currentBookingCode,
+                        topic: newTopic || undefined,
+                        user_alias: newName || undefined
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showToast('✅ Booking updated successfully!', 'success');
+                    closeManageModal();
+                    fetchAndRenderCalendar();
+                } else {
+                    showToast(`❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showToast('❌ Failed to update booking', 'error');
+            }
+        }
+
+        async function deleteBooking() {
+            if (!currentBookingCode) return;
+
+            const confirmMsg = currentEntryType === 'waitlist'
+                ? 'Remove yourself from the waitlist?'
+                : 'Cancel this booking?';
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const response = await fetch('/api/booking/cancel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: currentBookingCode,
+                        type: currentEntryType
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const successMsg = currentEntryType === 'waitlist'
+                        ? '✅ Removed from waitlist!'
+                        : data.promoted
+                            ? `✅ Cancelled! ${data.promoted.user_alias} promoted (new code: ${data.promoted.new_booking_code})`
+                            : '✅ Booking cancelled!';
+                    showToast(successMsg, 'success');
+                    closeManageModal();
+                    fetchAndRenderCalendar();
+                } else {
+                    showToast(`❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showToast('❌ Failed to cancel booking', 'error');
             }
         }
     </script>

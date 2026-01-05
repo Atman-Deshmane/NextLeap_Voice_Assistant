@@ -10,6 +10,39 @@ from typing import Optional
 
 # Path to history directory
 HISTORY_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "history")
+AUDIO_DIR = os.path.join(HISTORY_DIR, "audio")
+
+
+def save_audio_file(audio_bytes: bytes, session_id: str) -> Optional[str]:
+    """
+    Save audio bytes to a .wav file in the audio directory.
+    
+    Args:
+        audio_bytes: Raw audio bytes (WAV format)
+        session_id: The session identifier for naming
+        
+    Returns:
+        Relative filepath to the audio file, or None if failed
+    """
+    try:
+        # Ensure audio directory exists
+        os.makedirs(AUDIO_DIR, exist_ok=True)
+        
+        # Generate unique filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        filename = f"{session_id}_{timestamp}.wav"
+        filepath = os.path.join(AUDIO_DIR, filename)
+        
+        # Write audio bytes to file
+        with open(filepath, 'wb') as f:
+            f.write(audio_bytes)
+        
+        # Return relative path for storage in JSON
+        return f"audio/{filename}"
+        
+    except Exception as e:
+        print(f"Error saving audio file: {e}")
+        return None
 
 
 def start_session() -> str:
@@ -122,3 +155,36 @@ def list_sessions() -> list:
         return sorted(sessions, reverse=True)  # Most recent first
     except Exception:
         return []
+
+
+def update_last_turn_audio(session_id: str, audio_file: str) -> bool:
+    """
+    Update the last conversation turn with an audio file path.
+    
+    Args:
+        session_id: The session identifier
+        audio_file: Relative path to the audio file
+        
+    Returns:
+        True if update was successful, False otherwise
+    """
+    session_file = os.path.join(HISTORY_DIR, f"{session_id}.json")
+    
+    try:
+        # Read existing history
+        with open(session_file, 'r') as f:
+            history = json.load(f)
+        
+        # Update the last entry with audio file
+        if history:
+            history[-1]["audio_file"] = audio_file
+            
+            with open(session_file, 'w') as f:
+                json.dump(history, f, indent=2)
+            
+            return True
+        return False
+        
+    except Exception as e:
+        print(f"Error updating audio in history: {e}")
+        return False

@@ -67,6 +67,54 @@ def check_availability(date_str: str) -> List[str]:
     return sorted(available_times)
 
 
+def get_slots_with_status(start_date: str, end_date: str) -> Dict[str, Dict]:
+    """
+    Get all slots between dates with their status and waitlist counts.
+    
+    Args:
+        start_date: Start date in YYYY-MM-DD format
+        end_date: End date in YYYY-MM-DD format
+        
+    Returns:
+        Dict mapping dates to slot statuses:
+        {"2026-01-07": {"14:00": {"status": "booked", "waitlist_count": 2}}}
+    """
+    from datetime import datetime, timedelta
+    
+    store = _load_store()
+    result = {}
+    
+    # Parse dates
+    current = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+    
+    # Build waitlist counts per slot (date + time)
+    waitlist_counts = {}
+    for entry in store.get("waitlist", []):
+        date = entry.get("date")
+        time = entry.get("time")
+        if date and time:
+            key = f"{date}_{time}"
+            waitlist_counts[key] = waitlist_counts.get(key, 0) + 1
+    
+    # Iterate through date range
+    while current <= end:
+        date_str = current.strftime("%Y-%m-%d")
+        
+        if date_str in store["slots"]:
+            result[date_str] = {}
+            for time_slot, slot_data in store["slots"][date_str].items():
+                slot_key = f"{date_str}_{time_slot}"
+                result[date_str][time_slot] = {
+                    "status": slot_data["status"],
+                    "waitlist_count": waitlist_counts.get(slot_key, 0)
+                }
+        
+        current += timedelta(days=1)
+    
+    return result
+
+
 def book_slot(
     date_str: str, 
     time_str: str, 
@@ -194,7 +242,7 @@ This is an automated booking from HDFC Mutual Funds Advisor Scheduler.
     return response
 
 
-def cancel_slot(booking_code: str) -> Dict[str, Any]:
+def cancel_booking(booking_code: str) -> Dict[str, Any]:
     """
     Cancel a booking by its booking code.
     Searches entire store for the code and resets the slot to available.
@@ -213,15 +261,48 @@ def cancel_slot(booking_code: str) -> Dict[str, Any]:
     for date_str, times in store["slots"].items():
         for time_str, slot_data in times.items():
             if slot_data.get("booking_id") == booking_code:
-                # Found the booking - reset to available
-                store["slots"][date_str][time_str] = {
-                    "status": "available",
-                    "booking_id": None,
-                    "topic": None,
-                    "user_alias": None
-                }
+                # Found the booking - check if there's someone on waitlist for this specific slot
+                promoted_user = None
+                waitlist_entry = None
                 
-                _save_store(store)
+                for i, entry in enumerate(store["waitlist"]):
+                    if entry.get("date") == date_str and entry.get("time") == time_str:
+                        waitlist_entry = entry
+                        promoted_user = entry
+                        store["waitlist"].pop(i)
+                        break
+                
+                if promoted_user:
+                    # Promote waitlisted user to this slot
+                    new_booking_code = _generate_booking_code()
+                    store["slots"][date_str][time_str] = {
+                        "status": "booked",
+                        "booking_id": new_booking_code,
+                        "topic": promoted_user["topic"],
+                        "user_alias": promoted_user["user_alias"]
+                    }
+                    _save_store(store)
+                    
+                    return {
+                        "status": "success",
+                        "message": f"Booking {booking_code} cancelled. {promoted_user['user_alias']} promoted from waitlist!",
+                        "date": date_str,
+                        "time": time_str,
+                        "promoted": {
+                            "new_booking_code": new_booking_code,
+                            "user_alias": promoted_user["user_alias"],
+                            "old_waitlist_id": promoted_user.get("waitlist_id")
+                        }
+                    }
+                else:
+                    # No waitlist - reset to available
+                    store["slots"][date_str][time_str] = {
+                        "status": "available",
+                        "booking_id": None,
+                        "topic": None,
+                        "user_alias": None
+                    }
+                    _save_store(store)
                 
                 # Trigger n8n webhook for cancellation
                 try:
@@ -250,36 +331,42 @@ def cancel_slot(booking_code: str) -> Dict[str, Any]:
 
 
 def add_to_waitlist(
-    date_str: str, 
+    date_str: str,
+    time_str: str,
     topic: str, 
     user_alias: str = "Anonymous"
 ) -> Dict[str, Any]:
     """
-    Add a user to the waitlist for a specific date.
+    Add a user to the waitlist for a specific slot (date + time).
     
     Args:
         date_str: Preferred date in YYYY-MM-DD format
+        time_str: Preferred time in HH:MM format
         topic: One of [KYC/Onboarding, SIP/Mandates, Statements/Tax Docs, Withdrawals, Account Changes]
         user_alias: Optional name/alias (default: "Anonymous")
         
     Returns:
         Dict with status and waitlist position
     """
-    logger.add_log(f"📋 Slot full. Adding {user_alias} to waitlist for {date_str}", "info")
+    logger.add_log(f"📋 Slot full. Adding {user_alias} to waitlist for {date_str} {time_str}", "info")
     
     store = _load_store()
     
+    # Count position for this specific slot
+    slot_position = sum(1 for e in store["waitlist"] if e.get("date") == date_str and e.get("time") == time_str) + 1
+    
     waitlist_entry = {
         "date": date_str,
+        "time": time_str,
         "topic": topic,
         "user_alias": user_alias,
-        "waitlist_id": _generate_booking_code()  # Generate unique ID for waitlist
+        "waitlist_id": _generate_booking_code()
     }
     
     store["waitlist"].append(waitlist_entry)
     _save_store(store)
     
-    logger.add_log(f"✅ Added to waitlist (Position: {len(store['waitlist'])})", "success")
+    logger.add_log(f"✅ Added to waitlist (Position: {slot_position})", "success")
     
     # Trigger n8n webhook for waitlist
     try:
@@ -292,9 +379,9 @@ def add_to_waitlist(
     
     return {
         "status": "success",
-        "message": f"Added to waitlist for {date_str}",
+        "message": f"Added to waitlist for {date_str} at {time_str}",
         "waitlist_id": waitlist_entry["waitlist_id"],
-        "position": len(store["waitlist"])
+        "position": slot_position
     }
 
 
@@ -356,3 +443,219 @@ def get_all_available_dates() -> List[str]:
                 break  # Only need to find one available slot per date
     
     return sorted(available_dates)
+
+
+def lookup_booking(booking_code: str) -> Optional[Dict[str, Any]]:
+    """
+    Look up a booking by its code.
+    
+    Args:
+        booking_code: The booking ID (e.g., NL-XXXX)
+        
+    Returns:
+        Booking details dict or None if not found
+    """
+    store = _load_store()
+    
+    for date_str, times in store["slots"].items():
+        for time_str, slot_data in times.items():
+            if slot_data.get("booking_id") == booking_code:
+                return {
+                    "status": "success",
+                    "booking": {
+                        "booking_id": booking_code,
+                        "date": date_str,
+                        "time": time_str,
+                        "topic": slot_data.get("topic", ""),
+                        "user_alias": slot_data.get("user_alias", "Anonymous")
+                    }
+                }
+    
+    return {"status": "error", "message": f"Booking {booking_code} not found"}
+
+
+def modify_booking(booking_code: str, new_topic: str = None, new_alias: str = None) -> Dict[str, Any]:
+    """
+    Modify an existing booking's topic or user alias.
+    
+    Args:
+        booking_code: The booking ID
+        new_topic: New topic (optional)
+        new_alias: New user alias (optional)
+        
+    Returns:
+        Result dict with status and updated booking
+    """
+    store = _load_store()
+    
+    for date_str, times in store["slots"].items():
+        for time_str, slot_data in times.items():
+            if slot_data.get("booking_id") == booking_code:
+                if new_topic:
+                    slot_data["topic"] = new_topic
+                if new_alias:
+                    slot_data["user_alias"] = new_alias
+                
+                _save_store(store)
+                
+                return {
+                    "status": "success",
+                    "message": "Booking updated successfully",
+                    "booking": {
+                        "booking_id": booking_code,
+                        "date": date_str,
+                        "time": time_str,
+                        "topic": slot_data.get("topic", ""),
+                        "user_alias": slot_data.get("user_alias", "")
+                    }
+                }
+    
+    return {"status": "error", "message": f"Booking {booking_code} not found"}
+
+
+def reschedule_booking(booking_code: str, new_date: str, new_time: str) -> Dict[str, Any]:
+    """
+    Move a booking to a new time slot.
+    
+    Args:
+        booking_code: The booking ID
+        new_date: New date (YYYY-MM-DD)
+        new_time: New time (HH:MM)
+        
+    Returns:
+        Result dict with status
+    """
+    store = _load_store()
+    
+    # Find the existing booking
+    old_date = None
+    old_time = None
+    booking_data = None
+    
+    for date_str, times in store["slots"].items():
+        for time_str, slot_data in times.items():
+            if slot_data.get("booking_id") == booking_code:
+                old_date = date_str
+                old_time = time_str
+                booking_data = slot_data.copy()
+                break
+        if old_date:
+            break
+    
+    if not booking_data:
+        return {"status": "error", "message": f"Booking {booking_code} not found"}
+    
+    # Check if new slot exists and is available
+    if new_date not in store["slots"]:
+        return {"status": "error", "message": f"No slots available on {new_date}"}
+    
+    if new_time not in store["slots"][new_date]:
+        return {"status": "error", "message": f"Invalid time slot {new_time}"}
+    
+    if store["slots"][new_date][new_time]["status"] != "available":
+        return {"status": "error", "message": f"Slot at {new_time} on {new_date} is not available"}
+    
+    # Move the booking
+    store["slots"][old_date][old_time] = {"status": "available"}
+    store["slots"][new_date][new_time] = booking_data
+    
+    _save_store(store)
+    
+    return {
+        "status": "success",
+        "message": f"Booking rescheduled from {old_date} {old_time} to {new_date} {new_time}",
+        "booking": {
+            "booking_id": booking_code,
+            "date": new_date,
+            "time": new_time,
+            "topic": booking_data.get("topic", ""),
+            "user_alias": booking_data.get("user_alias", "")
+        }
+    }
+
+
+def lookup_waitlist(waitlist_id: str) -> Dict[str, Any]:
+    """
+    Look up a waitlist entry by its ID.
+    
+    Args:
+        waitlist_id: The waitlist ID (e.g., NL-XXXX)
+        
+    Returns:
+        Waitlist entry details or error
+    """
+    store = _load_store()
+    
+    for i, entry in enumerate(store["waitlist"]):
+        if entry.get("waitlist_id") == waitlist_id:
+            # Calculate position for this specific slot
+            date = entry.get("date", "")
+            time = entry.get("time", "")
+            slot_position = sum(1 for j, e in enumerate(store["waitlist"][:i+1]) 
+                               if e.get("date") == date and e.get("time") == time)
+            
+            return {
+                "status": "success",
+                "type": "waitlist",
+                "entry": {
+                    "waitlist_id": waitlist_id,
+                    "date": date,
+                    "time": time,
+                    "topic": entry.get("topic", ""),
+                    "user_alias": entry.get("user_alias", "Anonymous"),
+                    "position": slot_position
+                }
+            }
+    
+    return {"status": "error", "message": f"Waitlist entry {waitlist_id} not found"}
+
+
+def cancel_waitlist(waitlist_id: str) -> Dict[str, Any]:
+    """
+    Remove a waitlist entry.
+    
+    Args:
+        waitlist_id: The waitlist ID
+        
+    Returns:
+        Status of cancellation
+    """
+    store = _load_store()
+    
+    for i, entry in enumerate(store["waitlist"]):
+        if entry.get("waitlist_id") == waitlist_id:
+            removed_entry = store["waitlist"].pop(i)
+            _save_store(store)
+            
+            return {
+                "status": "success",
+                "message": f"Waitlist entry {waitlist_id} cancelled",
+                "entry": removed_entry
+            }
+    
+    return {"status": "error", "message": f"Waitlist entry {waitlist_id} not found"}
+
+
+def lookup_any(code: str) -> Dict[str, Any]:
+    """
+    Look up either a booking or waitlist entry by code.
+    Tries booking first, then waitlist.
+    
+    Args:
+        code: The booking or waitlist ID
+        
+    Returns:
+        Entry details with type indicator
+    """
+    # Try booking first
+    booking_result = lookup_booking(code)
+    if booking_result.get("status") == "success":
+        booking_result["type"] = "booking"
+        return booking_result
+    
+    # Try waitlist
+    waitlist_result = lookup_waitlist(code)
+    if waitlist_result.get("status") == "success":
+        return waitlist_result
+    
+    return {"status": "error", "message": f"Code {code} not found in bookings or waitlist"}
