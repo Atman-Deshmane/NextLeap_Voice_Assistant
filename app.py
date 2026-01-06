@@ -146,9 +146,11 @@ def voice():
         
         engine = _engine_instances[session_id]
         
-        # Step 3: Process with LLM
+        # Step 3: Process with LLM (returns dict with text and ui_hint)
         logger.add_log("🧠 Processing with AI...", "info")
-        agent_text = engine.chat(user_text)
+        result = engine.chat(user_text)
+        agent_text = result.get("text", "")
+        ui_component = result.get("ui_hint")
         logger.add_log("✅ AI response generated", "success")
         
         # Step 4: Generate speech (TTS) - graceful failure
@@ -175,6 +177,7 @@ def voice():
             "status": "success",
             "user_text": user_text,
             "agent_text": agent_text,
+            "ui_component": ui_component,
             "audio_base64": audio_base64,
             "audio_file": audio_filepath,
             "logs": g.logs

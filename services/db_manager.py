@@ -194,7 +194,8 @@ def book_slot(
         start_time_iso = booking_datetime.strftime("%Y-%m-%dT%H:%M:%S+05:30")
         end_time_iso = (booking_datetime + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S+05:30")
         
-        # Create event
+        # Create event (without attendee - service accounts can't invite without domain-wide delegation)
+        # Note: Email notifications would require domain-wide delegation setup in Google Workspace
         event_link = create_event(
             summary=f"HDFC Mutual Funds - {topic} Consultation",
             start_time_iso=start_time_iso,

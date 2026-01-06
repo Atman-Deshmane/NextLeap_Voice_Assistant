@@ -1305,9 +1305,15 @@
                         <button class="tab-btn" id="hybridTab" onclick="showView('hybrid')">✨ Hybrid Mode</button>
                         <button class="tab-btn" id="manualTab" onclick="showView('manual')">📅 Manual Schedule</button>
                     </div>
-                    <button class="reset-btn" onclick="resetChat()">
-                        New Conversation
-                    </button>
+                    <div style="display:flex; gap:8px;">
+                        <button class="reset-btn" onclick="manageExistingBooking()"
+                            style="background:#6366f1; color:white;">
+                            🔧 Manage Booking
+                        </button>
+                        <button class="reset-btn" onclick="resetChat()">
+                            New Conversation
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Chat View -->
@@ -1554,6 +1560,12 @@
             chatSection.classList.add('full-width');
         };
 
+        // Hybrid Mode welcome with Topic Pills
+        function showHybridWelcome() {
+            messagesContainer.innerHTML = '';
+            addMessage('assistant', "Let's proceed! What do you need advisory on?\\n\\nSelect a topic below:", null, false, { type: 'topic_selector' });
+        }
+
         function handleKeyDown(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -1615,13 +1627,27 @@
                 const restartBtn = document.createElement('button');
                 restartBtn.className = 'control-btn';
                 restartBtn.innerHTML = '\ud83d\udd04';
-                restartBtn.onclick = () => { audio.currentTime = 0; audio.play(); };
+                restartBtn.onclick = () => { audio.currentTime = 0; audio.play(); playBtn.innerHTML = '\u23f8\ufe0f'; wrapper.classList.add('playing'); activeAudio = audio; activeWrapper = wrapper; activePlayBtn = playBtn; };
+
+                // Speed button
+                const speedBtn = document.createElement('button');
+                speedBtn.className = 'speed-btn';
+                speedBtn.textContent = '1x';
+                speedBtn.title = 'Speed';
+                let speedIndex = 0;
+                const speeds = [1, 1.5, 2];
+                speedBtn.onclick = () => {
+                    speedIndex = (speedIndex + 1) % speeds.length;
+                    audio.playbackRate = speeds[speedIndex];
+                    speedBtn.textContent = speeds[speedIndex] + 'x';
+                };
 
                 audio.onended = () => { playBtn.innerHTML = '\u25b6\ufe0f'; wrapper.classList.remove('playing'); if (activeAudio === audio) { activeAudio = null; activeWrapper = null; activePlayBtn = null; } };
 
                 controls.appendChild(muteBtn);
                 controls.appendChild(playBtn);
                 controls.appendChild(restartBtn);
+                controls.appendChild(speedBtn);
                 wrapper.appendChild(controls);
                 wrapper.appendChild(messageDiv);
                 messagesContainer.appendChild(wrapper);
@@ -1701,6 +1727,10 @@
             } else if (hint.type === 'calendar_widget') {
                 const date = hint.data.date;
                 const slots = hint.data.slots || [];
+                // Get day name from date
+                const dateObj = new Date(date + 'T00:00:00');
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+                const shortDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 let slotsHtml = '';
 
                 if (slots && slots.length > 0) {
@@ -1708,26 +1738,87 @@
                         let timeDisplay = t.split(':')[0] > 12 ? (t.split(':')[0] - 12) + ':' + t.split(':')[1] + ' PM' : t + ' AM';
                         slotsHtml += `
                             <div class="mini-slot-card" onclick="bookFromWidget('${date}', '${t}')">
-                                <div class="mini-slot-date">Slot</div>
-                                <div class="mini-slot-time">${timeDisplay}</div>
+                                <div class="mini-slot-date">${timeDisplay}</div>
+                                <div class="mini-slot-time" style="font-size:0.7rem; color:#10b981;">Available</div>
                             </div>`;
                     });
                 } else {
-                    slotsHtml = '<div style="padding:15px; color:#64748b; font-size:0.8rem;">No slots available.</div>';
+                    // No slots available - show waitlist options
+                    slotsHtml = `
+                        <div class="mini-slot-card" onclick="joinWaitlistFromWidget('${date}', '14:00')" style="background:#fef3c7; border-color:#f59e0b;">
+                            <div class="mini-slot-date">2:00 PM</div>
+                            <div class="mini-slot-time" style="font-size:0.7rem; color:#d97706;">⏳ Waitlist</div>
+                        </div>
+                        <div class="mini-slot-card" onclick="joinWaitlistFromWidget('${date}', '15:00')" style="background:#fef3c7; border-color:#f59e0b;">
+                            <div class="mini-slot-date">3:00 PM</div>
+                            <div class="mini-slot-time" style="font-size:0.7rem; color:#d97706;">⏳ Waitlist</div>
+                        </div>`;
                 }
 
                 return `
                     <div class="chat-widget widget-calendar">
                         <div class="widget-cal-header">
-                            <span>📅 Available Slots (${date})</span>
+                            <span>📅 ${dayName} (${shortDate})</span>
                         </div>
                         <div class="mini-slots-container">
                             ${slotsHtml}
                         </div>
                     </div>`;
+            } else if (hint.type === 'calendar_carousel') {
+                // Full calendar carousel showing multiple days
+                const days = hint.data.days || [];
+                const carouselId = 'carousel-' + Date.now();
+
+                let carouselHtml = `
+                    <div style="display:flex; align-items:center; gap:8px; max-width:400px;">
+                        <button onclick="document.getElementById('${carouselId}').scrollBy({left:-200, behavior:'smooth'})" style="background:#004a8f; color:white; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:1rem; flex-shrink:0;">◀</button>
+                        <div id="${carouselId}" style="display:flex; gap:8px; overflow-x:scroll; padding:8px 0; max-width:320px; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none;">`;
+
+                days.forEach(day => {
+                    const dateObj = new Date(day.date + 'T00:00:00');
+                    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                    const shortDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const slots = day.slots || [];
+
+                    let slotsHtml = '';
+                    if (slots.length > 0) {
+                        slots.forEach(t => {
+                            let timeDisplay = t === '14:00' ? '2 PM' : '3 PM';
+                            slotsHtml += `<div class="mini-slot-card" onclick="bookFromWidget('${day.date}', '${t}')" style="min-width:55px; padding:5px; cursor:pointer;"><div style="font-size:0.7rem;">${timeDisplay}</div><div style="font-size:0.55rem; color:#10b981;">Open</div></div>`;
+                        });
+                    } else {
+                        slotsHtml = `
+                            <div class="mini-slot-card" onclick="joinWaitlistFromWidget('${day.date}', '14:00')" style="min-width:55px; padding:5px; background:#fef3c7; border-color:#f59e0b; cursor:pointer;"><div style="font-size:0.7rem;">2 PM</div><div style="font-size:0.55rem; color:#d97706;">Wait</div></div>
+                            <div class="mini-slot-card" onclick="joinWaitlistFromWidget('${day.date}', '15:00')" style="min-width:55px; padding:5px; background:#fef3c7; border-color:#f59e0b; cursor:pointer;"><div style="font-size:0.7rem;">3 PM</div><div style="font-size:0.55rem; color:#d97706;">Wait</div></div>`;
+                    }
+
+                    carouselHtml += `
+                        <div class="carousel-day" style="flex:0 0 auto; border:1px solid #e2e8f0; border-radius:6px; padding:6px; width:70px; text-align:center; background:#fff;">
+                            <div style="font-weight:600; color:#004a8f; font-size:0.75rem;">${dayName}</div>
+                            <div style="font-size:0.65rem; color:#64748b; margin-bottom:4px;">${shortDate}</div>
+                            <div style="display:flex; flex-direction:column; gap:3px;">
+                                ${slotsHtml}
+                            </div>
+                        </div>`;
+                });
+
+                carouselHtml += `
+                        </div>
+                        <button onclick="document.getElementById('${carouselId}').scrollBy({left:200, behavior:'smooth'})" style="background:#004a8f; color:white; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:1rem; flex-shrink:0;">▶</button>
+                    </div>`;
+                return `<div class="chat-widget" style="max-width:420px;">${carouselHtml}</div>`;
             } else if (hint.type === 'booking_card') {
                 const b = hint.data;
                 const code = b.code || b.booking_id || 'PENDING';
+                // Generate Google Calendar link
+                const eventDate = b.date ? b.date.replace(/-/g, '') : '';
+                const eventTime = b.time ? b.time.replace(':', '') + '00' : '';
+                const startDateTime = eventDate + 'T' + eventTime;
+                // End time is 1 hour later
+                let endHour = b.time ? parseInt(b.time.split(':')[0]) + 1 : 0;
+                const endDateTime = eventDate + 'T' + String(endHour).padStart(2, '0') + '0000';
+                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('HDFC Mutual Funds - ' + (b.topic || 'Consultation'))}&dates=${startDateTime}/${endDateTime}&details=${encodeURIComponent('Booking Code: ' + code)}&sf=true&output=xml`;
+
                 return `
                     <div class="chat-widget widget-ticket">
                         <div class="ticket-header">
@@ -1740,10 +1831,37 @@
                             <span class="ticket-value">${b.date || '-'}</span>
                             <span class="ticket-label">Time</span>
                             <span class="ticket-value">${b.time || '-'}</span>
-                            <div class="ticket-code">${code}</div>
+                            <div class="ticket-code" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                                <span id="bookingCode-${code}">${code}</span>
+                                <button onclick="copyToClipboard('${code}')" style="background:#e0f2fe; border:1px solid #0ea5e9; border-radius:4px; cursor:pointer; font-size:0.7rem; padding:2px 6px; color:#0369a1;" title="Copy Code">Copy</button>
+                            </div>
+                        </div>
+                        <div style="margin-top:10px; text-align:center; display:flex; justify-content:center; gap:15px;">
+                            <a href="${calendarUrl}" target="_blank" style="color:#10b981; font-size:0.8rem; text-decoration:none;">📅 Add to Calendar</a>
+                            <a href="#" onclick="openManageModalWithCode('${code}'); return false;" style="color:#6366f1; font-size:0.8rem; text-decoration:none;">🔧 Manage Booking</a>
+                        </div>
+                    </div>`;
+            } else if (hint.type === 'waitlist_card') {
+                const w = hint.data;
+                const waitlistId = w.waitlist_id || 'PENDING';
+                const position = w.position || 1;
+                return `
+                    <div class="chat-widget widget-ticket" style="border-left: 4px solid #f59e0b;">
+                        <div class="ticket-header" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                            ⏳ Waitlist Confirmed
+                        </div>
+                        <div class="ticket-body">
+                            <span class="ticket-label">Position</span>
+                            <span class="ticket-value">#${position}</span>
+                            <span class="ticket-label">Date</span>
+                            <span class="ticket-value">${w.message ? w.message.match(/\\d{4}-\\d{2}-\\d{2}/)?.[0] || '-' : '-'}</span>
+                            <div class="ticket-code" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                                <span>${waitlistId}</span>
+                                <button onclick="copyToClipboard('${waitlistId}')" style="background:#fef3c7; border:1px solid #f59e0b; border-radius:4px; cursor:pointer; font-size:0.7rem; padding:2px 6px; color:#d97706;" title="Copy Code">Copy</button>
+                            </div>
                         </div>
                         <div style="margin-top:10px; text-align:center;">
-                            <a href="#" style="color:#10b981; font-size:0.8rem; text-decoration:none;">Add to Calendar ↗</a>
+                            <span style="color:#64748b; font-size:0.75rem;">We'll notify you if a slot opens up!</span>
                         </div>
                     </div>`;
             }
@@ -1839,6 +1957,43 @@
             sendMessage();
         }
 
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Booking code copied!', 'success');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        function joinWaitlistFromWidget(date, time) {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value = `Add me to waitlist for ${time} on ${date}`;
+            sendMessage();
+        }
+
+        // Opens manage modal with booking code pre-filled (called from booking card)
+        function openManageModalWithCode(code) {
+            const modal = document.getElementById('manageModal');
+            const codeInput = document.getElementById('bookingCodeInput');
+            modal.classList.remove('hidden');
+            codeInput.value = code;
+            // Auto-lookup the booking
+            lookupBooking();
+        }
+
+        // Sends manage booking request via chat (called from header button)
+        function manageExistingBooking() {
+            if (currentView === 'manual') {
+                // In manual mode, open the modal directly
+                openManageModal();
+            } else {
+                // In Chat/Hybrid mode, send a chat message
+                const messageInput = document.getElementById('messageInput');
+                messageInput.value = 'I want to manage an existing booking';
+                sendMessage();
+            }
+        }
+
         async function resetChat() {
             try {
                 await fetch('/api/reset', { method: 'POST' });
@@ -1856,6 +2011,11 @@
         const micBtn = document.getElementById('micBtn');
 
         async function toggleRecording() {
+            // Stop any playing audio first
+            if (activeAudio) {
+                stopActiveAudio();
+            }
+
             if (isRecording) {
                 stopRecording();
             } else {
@@ -1946,7 +2106,7 @@
                     addMessage('user', data.user_text);
 
                     // Display agent's response with audio and auto-play
-                    addMessage('assistant', data.agent_text, data.audio_base64, true);
+                    addMessage('assistant', data.agent_text, data.audio_base64, true, data.ui_component);
 
                     // Process debug logs
                     if (data.logs && data.logs.length > 0) {
@@ -2024,6 +2184,8 @@
 
                 if (viewName === 'hybrid') {
                     if (hybridTab) hybridTab.classList.add('active');
+                    // Reset and show Hybrid welcome with Topic Pills
+                    showHybridWelcome();
                 } else {
                     chatTab.classList.add('active');
                 }

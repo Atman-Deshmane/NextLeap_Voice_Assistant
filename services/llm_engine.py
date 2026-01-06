@@ -59,12 +59,11 @@ You must strictly follow these rules:
 ## RULE 5: BOOKING FLOW
 1. Greet with disclaimer: "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice."
 2. Confirm the topic before proceeding.
-3. Ask for date/time preference.
-4. Use check_availability to find available slots.
-5. Offer up to 2 available slots.
-6. When booking, generate a booking code.
-7. Ask for an optional name (default: "Anonymous").
-8. Provide a mock "Secure Link" for them to complete their details: https://hdfc.mf/secure/<booking_code>
+3. IMMEDIATELY after topic is confirmed, use check_availability to show available dates/slots. Do NOT wait for user to ask.
+4. Offer up to 2 available slots.
+5. When booking, generate a booking code using the book_slot function.
+6. Ask for an optional name (default: "Anonymous").
+7. Confirm booking with the booking code. Do NOT generate any external links.
 
 ## RULE 6: STRICT NO PII POLICY
 - Do NOT ask for or accept: phone numbers, email addresses, PAN numbers, account numbers, or any personal identification.
@@ -325,15 +324,36 @@ class LLMEngine:
                     
                     # Capture UI Hints from Tool Calls
                     if fc.name == "check_availability":
+                        # Build a calendar carousel with ALL available weekdays (Jan 7-21)
+                        from services.db_manager import check_availability as check_avail_func
+                        from datetime import datetime, timedelta
+                        
+                        # Always show full booking range: Jan 7-21, 2026
+                        START_DATE = datetime(2026, 1, 7)
+                        END_DATE = datetime(2026, 1, 21)
+                        
+                        days_data = []
+                        current = START_DATE
+                        while current <= END_DATE:
+                            if current.weekday() < 5:  # Monday=0, Friday=4
+                                date_str = current.strftime("%Y-%m-%d")
+                                slots = check_avail_func(date_str)
+                                days_data.append({
+                                    "date": date_str,
+                                    "slots": slots if isinstance(slots, list) else []
+                                })
+                            current += timedelta(days=1)
+                        
                         ui_hint = {
-                            "type": "calendar_widget", 
+                            "type": "calendar_carousel", 
                             "data": {
-                                "date": fc.args.get("date_str"), 
-                                "slots": result if isinstance(result, list) else []
+                                "days": days_data
                             }
                         }
                     elif fc.name == "book_slot" and isinstance(result, dict) and result.get("status") == "success":
                         ui_hint = {"type": "booking_card", "data": result}
+                    elif fc.name == "add_to_waitlist" and isinstance(result, dict) and result.get("status") == "success":
+                        ui_hint = {"type": "waitlist_card", "data": result}
                     elif fc.name == "find_booking_by_name_and_time" and isinstance(result, dict) and result.get("status") == "success":
                          # Only show manage card if we found exactly one booking or a list of bookings
                          ui_hint = {"type": "manage_card", "data": result}
