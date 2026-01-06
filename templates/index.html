@@ -1583,7 +1583,13 @@
                 if (widgetHtml) {
                     const widgetDiv = document.createElement('div');
                     widgetDiv.innerHTML = widgetHtml;
-                    messageDiv.appendChild(widgetDiv);
+
+                    // Nest static list INSIDE the bubble, others outside
+                    if (uiComponent.type === 'topic_list_static') {
+                        contentDiv.appendChild(widgetDiv);
+                    } else {
+                        messageDiv.appendChild(widgetDiv);
+                    }
                 }
             }
 
@@ -1712,7 +1718,7 @@
                     </div>`;
             } else if (hint.type === 'topic_list_static') {
                 return `
-                    <div class="chat-widget" style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:12px;">
+                    <div class="chat-widget" style="margin-top:10px;">
                         <div style="font-weight:600; color:#1e3a5f; margin-bottom:8px;">Available Topics:</div>
                         <ul style="margin:0; padding-left:20px; color:#475569; font-size:0.9rem; line-height:1.6;">
                             <li>KYC / Onboarding</li>
