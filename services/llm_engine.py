@@ -325,22 +325,42 @@ class LLMEngine:
                     # Capture UI Hints from Tool Calls
                     if fc.name == "check_availability":
                         # Build a calendar carousel with ALL available weekdays (Jan 7-21)
-                        from services.db_manager import check_availability as check_avail_func
+                        # Use get_slots_with_status to get both available and booked (waitlist) slots
+                        from services.db_manager import get_slots_with_status
                         from datetime import datetime, timedelta
                         
                         # Always show full booking range: Jan 7-21, 2026
                         START_DATE = datetime(2026, 1, 7)
                         END_DATE = datetime(2026, 1, 21)
+                        start_str = START_DATE.strftime("%Y-%m-%d")
+                        end_str = END_DATE.strftime("%Y-%m-%d")
+                        
+                        # Get all slots data (available + booked with waitlist counts)
+                        all_slots_data = get_slots_with_status(start_str, end_str)
                         
                         days_data = []
                         current = START_DATE
                         while current <= END_DATE:
                             if current.weekday() < 5:  # Monday=0, Friday=4
                                 date_str = current.strftime("%Y-%m-%d")
-                                slots = check_avail_func(date_str)
+                                day_slots_dict = all_slots_data.get(date_str, {})
+                                
+                                # Transform into list of slot objects for frontend
+                                # We check specific standard slots: 14:00 and 15:00
+                                formatted_slots = []
+                                for time in ["14:00", "15:00"]:
+                                    slot_info = day_slots_dict.get(time, {"status": "available", "waitlist_count": 0})
+                                    # If not in DB, it's available (default)
+                                    # If in DB, use the status from DB
+                                    formatted_slots.append({
+                                        "time": time,
+                                        "status": slot_info.get("status", "available"),
+                                        "waitlist_count": slot_info.get("waitlist_count", 0)
+                                    })
+                                
                                 days_data.append({
                                     "date": date_str,
-                                    "slots": slots if isinstance(slots, list) else []
+                                    "slots": formatted_slots
                                 })
                             current += timedelta(days=1)
                         

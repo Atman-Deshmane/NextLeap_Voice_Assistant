@@ -683,36 +683,122 @@
             color: var(--gray-500);
         }
 
-        /* View Tabs - Dark Segmented Control */
+        /* View Tabs - Modern Gradient Design */
         .view-tabs {
             display: flex;
-            gap: 0;
-            background: #374151;
+            gap: 4px;
+            background: #f3f4f6;
             padding: 4px;
             border-radius: 12px;
+            border: 1px solid #e5e7eb;
         }
 
         .tab-btn {
-            padding: 0.5rem 1.25rem;
+            padding: 0.6rem 1.25rem;
             border: none;
             background: transparent;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: 500;
-            color: #9ca3af;
-            transition: all 0.2s ease;
+            color: #4b5563;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: inherit;
         }
 
         .tab-btn.active {
-            background: #4b5563;
+            background: linear-gradient(135deg, var(--hdfc-blue) 0%, var(--hdfc-blue-dark) 100%);
             color: white;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 76, 143, 0.3);
+            transform: scale(1.05);
+            font-weight: 600;
+            border: 2px solid white;
         }
 
         .tab-btn:hover:not(.active) {
-            color: #d1d5db;
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        /* Voice Interaction Overlay - Agent Edge Style */
+        #voice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            /* Default: let clicks pass through */
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: inset 0 0 0 rgba(0, 74, 143, 0);
+        }
+
+        #voice-overlay.voice-active {
+            opacity: 1;
+            pointer-events: auto;
+            /* Active: capture clicks to stop recording */
+            /* Breathing Glow Animation */
+            animation: breathe 3s infinite ease-in-out;
+        }
+
+        #voice-overlay .voice-label {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #00ffcc;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        #voice-overlay .voice-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00ffcc;
+            border-radius: 50%;
+            animation: pulse-dot 1s infinite;
+        }
+
+        @keyframes breathe {
+            0% {
+                box-shadow: inset 0 0 30px var(--hdfc-blue-light);
+            }
+
+            50% {
+                box-shadow: inset 0 0 80px var(--hdfc-blue), inset 0 0 20px #00ffcc;
+            }
+
+            100% {
+                box-shadow: inset 0 0 30px var(--hdfc-blue-light);
+            }
+        }
+
+        @keyframes pulse-dot {
+            0% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
         }
 
         /* Chat View Container */
@@ -1261,6 +1347,13 @@
 </head>
 
 <body>
+    <!-- Voice Interaction Overlay -->
+    <div id="voice-overlay" onclick="stopRecording()">
+        <div class="voice-label">
+            <div class="voice-dot"></div>
+            Listening...
+        </div>
+    </div>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -1281,18 +1374,6 @@
     </header>
 
     <!-- Listening Overlay -->
-    <div class="listening-overlay hidden" id="listeningOverlay" onclick="stopRecording()">
-        <div class="listening-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-                <path
-                    d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-            </svg>
-        </div>
-        <div class="listening-text">Listening...</div>
-        <div class="listening-hint">Tap anywhere to stop</div>
-    </div>
-
     <!-- Main Content -->
     <main class="main-container">
         <!-- Chat Section (Left 70%) -->
@@ -1529,7 +1610,8 @@
         const typingIndicator = document.getElementById('typingIndicator');
 
         // View State
-        let currentView = 'chat'; // 'chat', 'hybrid', 'manual'
+        // View State
+        let currentView = 'hybrid'; // 'chat', 'hybrid', 'manual'
 
         // Global Audio State
         let activeAudio = null;
@@ -1551,7 +1633,12 @@
                 console.error('Failed to reset conversation:', error);
             }
 
-            addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+            // Default to Hybrid Welcome
+            showHybridWelcome();
+
+            // Set Tab State
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[onclick="showView(\'hybrid\')"]').classList.add('active');
 
             // Default: hide debug panel
             const debugSection = document.querySelector('.debug-section');
@@ -1561,9 +1648,13 @@
         };
 
         // Hybrid Mode welcome with Topic Pills
+        // Hybrid Mode welcome with Topic Pills
         function showHybridWelcome() {
-            messagesContainer.innerHTML = '';
-            addMessage('assistant', "Let's proceed! What do you need advisory on?\\n\\nSelect a topic below:", null, false, { type: 'topic_selector' });
+            // Only show welcome if chat is empty to preserve history
+            if (messagesContainer.children.length === 0) {
+                messagesContainer.innerHTML = '';
+                addMessage('assistant', "Let's proceed! What do you need advisory on?\\n\\nSelect a topic below:", null, false, { type: 'topic_selector' });
+            }
         }
 
         function handleKeyDown(event) {
@@ -1778,22 +1869,31 @@
                     const dateObj = new Date(day.date + 'T00:00:00');
                     const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
                     const shortDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    const slots = day.slots || [];
+                    const slots = day.slots || []; // Now a list of objects {time, status, waitlist_count}
 
                     let slotsHtml = '';
                     if (slots.length > 0) {
-                        slots.forEach(t => {
+                        slots.forEach(slot => {
+                            // Determine display time (14:00 -> 2 PM)
+                            let t = slot.time;
                             let timeDisplay = t === '14:00' ? '2 PM' : '3 PM';
-                            slotsHtml += `<div class="mini-slot-card" onclick="bookFromWidget('${day.date}', '${t}')" style="min-width:55px; padding:5px; cursor:pointer;"><div style="font-size:0.7rem;">${timeDisplay}</div><div style="font-size:0.55rem; color:#10b981;">Open</div></div>`;
+
+                            if (slot.status === 'available') {
+                                // Available Slot Card
+                                slotsHtml += `<div class="mini-slot-card" onclick="bookFromWidget('${day.date}', '${t}')" style="min-width:55px; padding:5px; cursor:pointer;"><div style="font-size:0.7rem;">${timeDisplay}</div><div style="font-size:0.55rem; color:#10b981;">Open</div></div>`;
+                            } else {
+                                // Waitlist Slot Card
+                                let countText = slot.waitlist_count > 0 ? `(${slot.waitlist_count})` : '';
+                                slotsHtml += `<div class="mini-slot-card" onclick="joinWaitlistFromWidget('${day.date}', '${t}')" style="min-width:65px; padding:5px; background:#fef3c7; border-color:#f59e0b; cursor:pointer;"><div style="font-size:0.7rem;">${timeDisplay}</div><div style="font-size:0.55rem; color:#d97706;">Wait ${countText}</div></div>`;
+                            }
                         });
                     } else {
-                        slotsHtml = `
-                            <div class="mini-slot-card" onclick="joinWaitlistFromWidget('${day.date}', '14:00')" style="min-width:55px; padding:5px; background:#fef3c7; border-color:#f59e0b; cursor:pointer;"><div style="font-size:0.7rem;">2 PM</div><div style="font-size:0.55rem; color:#d97706;">Wait</div></div>
-                            <div class="mini-slot-card" onclick="joinWaitlistFromWidget('${day.date}', '15:00')" style="min-width:55px; padding:5px; background:#fef3c7; border-color:#f59e0b; cursor:pointer;"><div style="font-size:0.7rem;">3 PM</div><div style="font-size:0.55rem; color:#d97706;">Wait</div></div>`;
+                        // Fallback empty state
+                        slotsHtml = '<div style="font-size:0.6rem; color:#94a3b8; padding:5px;">None</div>';
                     }
 
                     carouselHtml += `
-                        <div class="carousel-day" style="flex:0 0 auto; border:1px solid #e2e8f0; border-radius:6px; padding:6px; width:70px; text-align:center; background:#fff;">
+                        <div class="carousel-day" style="flex:0 0 auto; border:1px solid #e2e8f0; border-radius:6px; padding:6px; width:80px; text-align:center; background:#fff;">
                             <div style="font-weight:600; color:#004a8f; font-size:0.75rem;">${dayName}</div>
                             <div style="font-size:0.65rem; color:#64748b; margin-bottom:4px;">${shortDate}</div>
                             <div style="display:flex; flex-direction:column; gap:3px;">
@@ -2045,8 +2145,8 @@
                 isRecording = true;
                 micBtn.classList.add('recording');
 
-                // Show listening overlay
-                document.getElementById('listeningOverlay').classList.remove('hidden');
+                // Show Voice Overlay
+                document.getElementById('voice-overlay').classList.add('voice-active');
 
             } catch (error) {
                 console.error('Microphone access denied:', error);
@@ -2060,8 +2160,8 @@
                 isRecording = false;
                 micBtn.classList.remove('recording');
 
-                // Hide listening overlay
-                document.getElementById('listeningOverlay').classList.add('hidden');
+                // Hide Voice Overlay
+                document.getElementById('voice-overlay').classList.remove('voice-active');
             }
         }
 
@@ -2184,7 +2284,7 @@
 
                 if (viewName === 'hybrid') {
                     if (hybridTab) hybridTab.classList.add('active');
-                    // Reset and show Hybrid welcome with Topic Pills
+                    // Reset and show Hybrid welcome ONLY if necessary (handled by showHybridWelcome check)
                     showHybridWelcome();
                 } else {
                     chatTab.classList.add('active');

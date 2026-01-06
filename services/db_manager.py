@@ -23,9 +23,17 @@ def _load_store() -> Dict:
 
 
 def _save_store(data: Dict) -> None:
-    """Save data to store.json file."""
+    """Save data to store.json file and sync to GitHub."""
     with open(STORE_PATH, 'w') as f:
         json.dump(data, f, indent=2)
+    
+    # Sync to GitHub for cloud persistence (non-blocking)
+    try:
+        from services import git_sync
+        git_sync.push_updates()
+    except Exception as e:
+        logger.add_log(f"⚠️ Git sync skipped: {e}", "warning")
+
 
 
 def _generate_booking_code() -> str:

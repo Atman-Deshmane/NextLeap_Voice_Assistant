@@ -17,6 +17,14 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", os.urandom(24).hex())
 # Import LLM engine after environment is loaded
 from services.llm_engine import LLMEngine
 
+# Initialize Git Sync for cloud persistence
+try:
+    from services import git_sync
+    git_sync.setup_git()
+    git_sync.pull_latest()
+except Exception as e:
+    print(f"⚠️ Git sync initialization skipped: {e}")
+
 # Store engine instances per session
 # Key: session_id (from Flask session), Value: LLMEngine instance
 _engine_instances = {}
