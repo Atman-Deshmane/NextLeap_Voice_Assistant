@@ -1,0 +1,181 @@
+{
+  "slots": {
+    "2026-01-07": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-ZI0E",
+        "topic": "SIP/Mandates",
+        "user_alias": "Anonymous"
+      },
+      "15:00": {
+        "status": "booked",
+        "booking_id": "NL-XH8X",
+        "topic": "SIP/Mandates",
+        "user_alias": "Anonymous"
+      }
+    },
+    "2026-01-08": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-5WT6",
+        "topic": "KYC/Onboarding",
+        "user_alias": "Anonymous"
+      },
+      "15:00": {
+        "status": "booked",
+        "booking_id": "NL-AZSU",
+        "topic": "Withdrawals",
+        "user_alias": "Anonymous"
+      }
+    },
+    "2026-01-09": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-TGE5",
+        "topic": "Account Changes",
+        "user_alias": "Bruce Wayne"
+      },
+      "15:00": {
+        "status": "booked",
+        "booking_id": "NL-TQD2",
+        "topic": "Account Changes",
+        "user_alias": "Bruce Wayne"
+      }
+    },
+    "2026-01-12": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-W95J",
+        "topic": "SIP/Mandates",
+        "user_alias": "Anonymous"
+      },
+      "15:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      }
+    },
+    "2026-01-13": {
+      "14:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      },
+      "15:00": {
+        "status": "booked",
+        "booking_id": "NL-TUET",
+        "topic": "KYC/Onboarding",
+        "user_alias": "Anonymous"
+      }
+    },
+    "2026-01-14": {
+      "14:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      },
+      "15:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      }
+    },
+    "2026-01-15": {
+      "14:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      },
+      "15:00": {
+        "status": "booked",
+        "booking_id": "NL-2DQ9",
+        "topic": "SIP/Mandates",
+        "user_alias": "Anonymous"
+      }
+    },
+    "2026-01-16": {
+      "14:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      },
+      "15:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      }
+    },
+    "2026-01-19": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-IF8N",
+        "topic": "Statements/Tax Docs",
+        "user_alias": "Anonymous"
+      },
+      "15:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      }
+    },
+    "2026-01-20": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-QTPY",
+        "topic": "Statements/Tax Docs",
+        "user_alias": "Batman"
+      },
+      "15:00": {
+        "status": "booked",
+        "booking_id": "NL-O7M9",
+        "topic": "Withdrawals",
+        "user_alias": "Anonymous"
+      }
+    },
+    "2026-01-21": {
+      "14:00": {
+        "status": "booked",
+        "booking_id": "NL-FLT0",
+        "topic": "Account Changes",
+        "user_alias": "Anonymous"
+      },
+      "15:00": {
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
+      }
+    }
+  },
+  "waitlist": [
+    {
+      "date": "2026-01-12",
+      "time": "14:00",
+      "topic": "KYC/Onboarding",
+      "user_alias": "Waitlist User",
+      "waitlist_id": "NL-SBH7"
+    },
+    {
+      "date": "2026-01-20",
+      "time": "14:00",
+      "topic": "Statements/Tax Docs",
+      "user_alias": "Anonymous",
+      "waitlist_id": "NL-BZJO"
+    },
+    {
+      "date": "2026-01-08",
+      "time": "14:00",
+      "topic": "Statements/Tax Docs",
+      "user_alias": "Anonymous",
+      "waitlist_id": "NL-PY9B"
+    }
+  ]
+}
