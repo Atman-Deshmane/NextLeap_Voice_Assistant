@@ -233,6 +233,56 @@ def health():
 
 
 # ============================================
+# Admin API Endpoints
+# ============================================
+
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Imbatman")
+
+@app.route("/api/admin/data", methods=["GET"])
+def admin_data():
+    """
+    Get all booking data for Admin Portal.
+    
+    Headers:
+        X-Admin-Pass: Admin password
+        
+    Returns:
+        Full slot structure including user_alias and booking_id
+    """
+    # Check admin password
+    admin_pass = request.headers.get("X-Admin-Pass", "")
+    if admin_pass != ADMIN_PASSWORD:
+        return jsonify({
+            "status": "error",
+            "message": "Unauthorized"
+        }), 401
+    
+    try:
+        from services import db_manager
+        import json
+        
+        # Load full store data (including user_alias and booking_id)
+        store_path = os.path.join(os.path.dirname(__file__), "store.json")
+        if os.path.exists(store_path):
+            with open(store_path, 'r') as f:
+                store = json.load(f)
+        else:
+            store = {"slots": {}, "waitlist": []}
+        
+        return jsonify({
+            "status": "success",
+            "slots": store.get("slots", {}),
+            "waitlist": store.get("waitlist", [])
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+# ============================================
 # Manual Calendar API Endpoints
 # ============================================
 

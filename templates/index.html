@@ -1367,6 +1367,10 @@
             <div class="header-badge">
                 🔒 Secure Chat
             </div>
+            <button class="toggle-debug-btn" id="adminBtn" onclick="openAdminPortal()"
+                style="background:#1e3a5f; font-size:0.75rem; padding:0.4rem 0.8rem;">
+                🔐 Admin
+            </button>
             <button class="toggle-debug-btn" id="toggleDebugBtn" onclick="toggleDebugPanel()">
                 ⚡ Show Internals
             </button>
@@ -1467,6 +1471,28 @@
                         </div>
                         <div class="calendar-grid" id="calendarGrid">
                             <!-- Calendar will be rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Password Modal -->
+                <div id="adminPasswordModal" class="modal-overlay hidden">
+                    <div class="modal" style="max-width:320px;">
+                        <div class="modal-header" style="background:linear-gradient(135deg, #1e3a5f, #0d2137);">
+                            <span class="modal-title" style="color:white;">🔐 Admin Login</span>
+                            <button class="modal-close" onclick="closeAdminPasswordModal()"
+                                style="color:white;">×</button>
+                        </div>
+                        <div class="modal-body" style="padding:20px;">
+                            <div class="form-group">
+                                <label class="form-label">Enter Admin Password</label>
+                                <input type="password" class="form-input" id="adminPasswordInput" placeholder="Password"
+                                    onkeydown="if(event.key==='Enter')submitAdminPassword()">
+                            </div>
+                            <button class="btn btn-primary" onclick="submitAdminPassword()"
+                                style="width:100%; margin-top:10px;">
+                                Login
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1589,18 +1615,20 @@
                         It does not constitute investment advice.
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Debug Panel (Right 30%) -->
-                <div class="debug-section">
-                    <div class="debug-panel">
-                        <div class="debug-header">
-                            ⚡ System Internals
-                        </div>
-                        <div class="debug-logs" id="debugLogs">
-                            <!-- Debug logs will be added by JS -->
-                        </div>
-                    </div>
+        <!-- Debug Panel (Right 30%) -->
+        <div class="debug-section">
+            <div class="debug-panel">
+                <div class="debug-header">
+                    ⚡ System Internals
                 </div>
+                <div class="debug-logs" id="debugLogs">
+                    <!-- Debug logs will be added by JS -->
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -2247,6 +2275,103 @@
         }
 
         // ============================================
+        // Admin Portal Functions
+        // ============================================
+
+        let isAdminMode = false;
+        let adminPassword = null;
+
+        function openAdminPortal() {
+            document.getElementById('adminPasswordModal').classList.remove('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminPasswordInput').focus();
+        }
+
+        function closeAdminPasswordModal() {
+            document.getElementById('adminPasswordModal').classList.add('hidden');
+        }
+
+        async function submitAdminPassword() {
+            const pass = document.getElementById('adminPasswordInput').value;
+            if (!pass) return;
+
+            // Verify password with server
+            try {
+                const response = await fetch('/api/admin/data', {
+                    headers: { 'X-Admin-Pass': pass }
+                });
+
+                if (response.status === 401) {
+                    alert('Invalid Admin Password!');
+                    return;
+                }
+
+                // Password valid - enter admin mode
+                adminPassword = pass;
+                isAdminMode = true;
+                closeAdminPasswordModal();
+
+                // Switch to Manual Mode with admin enhancements
+                enterAdminMode();
+
+            } catch (error) {
+                alert('Error verifying password: ' + error.message);
+            }
+        }
+
+        function enterAdminMode() {
+            // Hide tabs
+            document.querySelector('.view-tabs').style.display = 'none';
+            document.querySelector('.chat-header > div:last-child').style.display = 'none';
+
+            // Add admin header bar
+            const chatHeader = document.querySelector('.chat-header');
+            if (!document.getElementById('adminHeader')) {
+                const adminHeader = document.createElement('div');
+                adminHeader.id = 'adminHeader';
+                adminHeader.style.cssText = 'display:flex; align-items:center; gap:10px; padding:8px 15px; background:linear-gradient(135deg, #1e3a5f, #0d2137); border-radius:8px; color:white; margin-bottom:10px;';
+                adminHeader.innerHTML = `
+                    <span style="font-size:1rem;">🔐</span>
+                    <span style="font-weight:600;">Admin Mode</span>
+                    <button onclick="exitAdminMode()" style="margin-left:auto; background:rgba(255,255,255,0.2); border:none; padding:5px 12px; border-radius:5px; color:white; cursor:pointer; font-size:0.8rem;">✕ Exit Admin</button>
+                `;
+                chatHeader.insertBefore(adminHeader, chatHeader.firstChild);
+            }
+
+            // Show Manual View
+            document.getElementById('chatView').classList.add('hidden');
+            document.getElementById('manualView').classList.remove('hidden');
+
+            // Hide topic selector in admin mode
+            document.querySelector('.topic-selector').style.display = 'none';
+
+            // Initialize and render calendar
+            if (!currentWeekStart) {
+                currentWeekStart = getNextMonday();
+            }
+            fetchAndRenderCalendar();
+        }
+
+        function exitAdminMode() {
+            isAdminMode = false;
+            adminPassword = null;
+
+            // Show tabs again
+            document.querySelector('.view-tabs').style.display = 'flex';
+            document.querySelector('.chat-header > div:last-child').style.display = 'flex';
+
+            // Remove admin header
+            const adminHeader = document.getElementById('adminHeader');
+            if (adminHeader) adminHeader.remove();
+
+            // Show topic selector
+            document.querySelector('.topic-selector').style.display = 'flex';
+
+            // Return to Hybrid mode
+            showView('hybrid');
+        }
+
+        // ============================================
         // Manual Calendar Functions
         // ============================================
 
@@ -2326,8 +2451,25 @@
             document.getElementById('weekLabel').textContent = `${startMonth} - ${endMonth}`;
 
             try {
-                const response = await fetch(`/api/slots?start_date=${formatDateStr(currentWeekStart)}&end_date=${formatDateStr(endDate)}`);
-                const data = await response.json();
+                let response, data;
+
+                if (isAdminMode && adminPassword) {
+                    // Admin mode: fetch full data with user names
+                    response = await fetch('/api/admin/data', {
+                        headers: { 'X-Admin-Pass': adminPassword }
+                    });
+                    data = await response.json();
+
+                    if (response.status === 401) {
+                        alert('Admin session expired!');
+                        exitAdminMode();
+                        return;
+                    }
+                } else {
+                    // Normal mode: fetch public data
+                    response = await fetch(`/api/slots?start_date=${formatDateStr(currentWeekStart)}&end_date=${formatDateStr(endDate)}`);
+                    data = await response.json();
+                }
 
                 if (data.status === 'success') {
                     calendarSlotsData = data.slots;
@@ -2371,10 +2513,25 @@
                     if (!slotData) {
                         html += `<div class="calendar-cell slot-cell slot-past">—</div>`;
                     } else if (slotData.status === 'available') {
-                        html += `<div class="calendar-cell slot-cell slot-available" onclick="bookSlot('${dateStr}', '${time}')">Book</div>`;
+                        if (isAdminMode) {
+                            html += `<div class="calendar-cell slot-cell slot-available">Open</div>`;
+                        } else {
+                            html += `<div class="calendar-cell slot-cell slot-available" onclick="bookSlot('${dateStr}', '${time}')">Book</div>`;
+                        }
                     } else {
-                        const waitlist = slotData.waitlist_count > 0 ? `<div class="waitlist-badge">${slotData.waitlist_count} waiting</div>` : '';
-                        html += `<div class="calendar-cell slot-cell slot-booked" onclick="joinWaitlist('${dateStr}', '${time}')">Taken${waitlist}</div>`;
+                        // Booked slot
+                        if (isAdminMode) {
+                            // Admin mode: show user name, clickable to manage
+                            const userName = slotData.user_alias || 'Anonymous';
+                            const bookingId = slotData.booking_id || '';
+                            html += `<div class="calendar-cell slot-cell slot-booked" onclick="openManageModalWithCode('${bookingId}')" style="cursor:pointer;" title="${bookingId}">
+                                <span style="font-size:0.75rem;">👤 ${userName}</span>
+                            </div>`;
+                        } else {
+                            // Normal mode: show taken + waitlist count
+                            const waitlist = slotData.waitlist_count > 0 ? `<div class="waitlist-badge">${slotData.waitlist_count} waiting</div>` : '';
+                            html += `<div class="calendar-cell slot-cell slot-booked" onclick="joinWaitlist('${dateStr}', '${time}')">Taken${waitlist}</div>`;
+                        }
                     }
                 });
             });

@@ -122,8 +122,8 @@ def push_updates():
                 logger.warning("⚠️ store.json not found, skipping push")
                 return
             
-            # Add store.json to index
-            _repo.index.add(["store.json"])
+            # Add store.json to index (force=True to bypass .gitignore)
+            _repo.index.add(["store.json"], force=True)
             
             # Check if there are changes to commit
             if _repo.is_dirty() or len(_repo.index.diff("HEAD")) > 0:

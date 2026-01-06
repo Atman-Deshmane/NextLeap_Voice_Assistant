@@ -17,9 +17,41 @@ STORE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "store.jso
 
 
 def _load_store() -> Dict:
-    """Load the store.json file."""
-    with open(STORE_PATH, 'r') as f:
-        return json.load(f)
+    """Load the store.json file. Auto-initialize if missing."""
+    if not os.path.exists(STORE_PATH):
+        logger.add_log("⚠️ store.json not found. Creating new default database.", "warning")
+        
+        # Default structure
+        default_data = {
+            "slots": {},
+            "bookings": {},
+            "waitlist": []
+        }
+        
+        # Initialize slots for Jan 7-21, 2026 (weekdays only, 14:00 & 15:00)
+        from datetime import datetime, timedelta
+        start = datetime(2026, 1, 7)
+        for i in range(14):
+            current = start + timedelta(days=i)
+            if current.weekday() < 5:  # Weekdays only
+                d_str = current.strftime("%Y-%m-%d")
+                default_data["slots"][d_str] = {
+                    "14:00": {"status": "available", "booking_id": None},
+                    "15:00": {"status": "available", "booking_id": None}
+                }
+        
+        # Save immediately
+        with open(STORE_PATH, 'w') as f:
+            json.dump(default_data, f, indent=2)
+        
+        return default_data
+    
+    try:
+        with open(STORE_PATH, 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        logger.add_log("❌ Corrupt store.json, returning empty default", "error")
+        return {"slots": {}, "bookings": {}, "waitlist": []}
 
 
 def _save_store(data: Dict) -> None:
