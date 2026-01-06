@@ -163,10 +163,12 @@ def voice():
         
         # Step 4: Generate speech (TTS) - graceful failure
         logger.add_log("🔊 Generating speech with Orpheus TTS...", "info")
-        audio_bytes = groq_voice.generate_audio(agent_text)
+        audio_bytes, tts_error = groq_voice.generate_audio(agent_text)
         
         audio_base64 = None
         audio_filepath = None
+        voice_warning = None
+
         if audio_bytes:
             audio_base64 = groq_voice.audio_to_base64(audio_bytes)
             logger.add_log("✅ Audio generated successfully", "success")
@@ -179,7 +181,8 @@ def voice():
                 # Update session history with audio filepath
                 history_manager.update_last_turn_audio(session_id, audio_filepath)
         else:
-            logger.add_log("⚠️ TTS unavailable, text-only response", "warning")
+            voice_warning = f"TTS Unavailable: {tts_error}" if tts_error else "TTS Unavailable"
+            logger.add_log(f"⚠️ {voice_warning}, text-only response", "warning")
         
         return jsonify({
             "status": "success",
@@ -188,6 +191,7 @@ def voice():
             "ui_component": ui_component,
             "audio_base64": audio_base64,
             "audio_file": audio_filepath,
+            "warning": voice_warning,
             "logs": g.logs
         })
         

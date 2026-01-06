@@ -14,8 +14,7 @@ pip-delete-this-directory.txt
 .env
 
 # Database
-# Database
-# store.json is now committed for cloud persistence
+
 
 # History and Logs
 history/*
