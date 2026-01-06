@@ -50,10 +50,10 @@
         "user_alias": "Anonymous"
       },
       "15:00": {
-        "status": "booked",
-        "booking_id": "NL-H5SR",
-        "topic": "Withdrawals",
-        "user_alias": "Batman"
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
       }
     },
     "2026-01-13": {
