@@ -1577,8 +1577,8 @@
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(contentDiv);
 
-            // Add Widget if present and in Hybrid Mode
-            if (role === 'assistant' && currentView === 'hybrid' && uiComponent) {
+            // Add Widget if present
+            if (role === 'assistant' && uiComponent) {
                 const widgetHtml = renderWidget(uiComponent);
                 if (widgetHtml) {
                     const widgetDiv = document.createElement('div');
@@ -1700,6 +1700,17 @@
             if (!hint || !hint.type) return '';
 
             if (hint.type === 'topic_selector') {
+                return `
+                    <div class="chat-widget">
+                        <div class="widget-pills">
+                            <div class="widget-pill" onclick="sendTopic('KYC/Onboarding')">KYC / Onboarding</div>
+                            <div class="widget-pill" onclick="sendTopic('SIP/Mandates')">SIP / Mandates</div>
+                            <div class="widget-pill" onclick="sendTopic('Statements/Tax Docs')">Statements</div>
+                            <div class="widget-pill" onclick="sendTopic('Withdrawals')">Withdrawals</div>
+                            <div class="widget-pill" onclick="sendTopic('Account Changes')">Account Changes</div>
+                        </div>
+                    </div>`;
+            } else if (hint.type === 'topic_list_static') {
                 return `
                     <div class="chat-widget" style="background:#f8fafc; border:1px solid #e2e8f0; padding:15px; border-radius:12px;">
                         <div style="font-weight:600; color:#1e3a5f; margin-bottom:8px;">Available Topics:</div>
@@ -1994,7 +2005,12 @@
             try {
                 await fetch('/api/reset', { method: 'POST' });
                 messagesContainer.innerHTML = '';
-                addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+
+                if (currentView === 'hybrid') {
+                    showHybridWelcome();
+                } else {
+                    addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors.', null, false, { type: 'topic_list_static' });
+                }
             } catch (error) {
                 console.error('Failed to reset chat:', error);
             }
