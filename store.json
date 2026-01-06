@@ -50,10 +50,10 @@
         "user_alias": "Anonymous"
       },
       "15:00": {
-        "status": "available",
-        "booking_id": null,
-        "topic": null,
-        "user_alias": null
+        "status": "booked",
+        "booking_id": "NL-H5SR",
+        "topic": "Statements/Tax Docs",
+        "user_alias": "Anonymous"
       }
     },
     "2026-01-13": {
