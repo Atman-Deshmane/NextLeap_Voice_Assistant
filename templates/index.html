@@ -2507,7 +2507,7 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    showToast(`✅ Booked! Code: ${data.booking_id}`, 'success');
+                    showToast(`✅ Booked! Code: ${data.code}`, 'success');
                     fetchAndRenderCalendar();
                 } else {
                     showToast(`❌ ${data.message}`, 'error');
