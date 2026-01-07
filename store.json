@@ -58,10 +58,11 @@
     },
     "2026-01-13": {
       "14:00": {
-        "status": "available",
-        "booking_id": null,
-        "topic": null,
-        "user_alias": null
+        "status": "booked",
+        "booking_id": "NL-B2RJ",
+        "topic": "Statements/Tax Docs",
+        "user_alias": "Anonymous",
+        "calendar_event_id": null
       },
       "15:00": {
         "status": "available",
