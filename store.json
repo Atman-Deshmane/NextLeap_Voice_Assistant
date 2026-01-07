@@ -50,10 +50,10 @@
         "user_alias": "Anonymous"
       },
       "15:00": {
-        "status": "available",
-        "booking_id": null,
-        "topic": null,
-        "user_alias": null
+        "status": "booked",
+        "booking_id": "NL-AOCE",
+        "topic": "KYC/Onboarding",
+        "user_alias": "Anonymous"
       }
     },
     "2026-01-13": {
