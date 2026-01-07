@@ -78,10 +78,10 @@
         "user_alias": null
       },
       "15:00": {
-        "status": "booked",
-        "booking_id": "NL-8MWF",
-        "topic": "Statements/Tax Documents",
-        "user_alias": "Batman"
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null
       }
     },
     "2026-01-15": {
