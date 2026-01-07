@@ -1475,147 +1475,13 @@
                     </div>
                 </div>
 
-                <!-- Admin Password Modal -->
-                <div id="adminPasswordModal" class="modal-overlay hidden">
-                    <div class="modal" style="max-width:320px;">
-                        <div class="modal-header" style="background:linear-gradient(135deg, #1e3a5f, #0d2137);">
-                            <span class="modal-title" style="color:white;">🔐 Admin Login</span>
-                            <button class="modal-close" onclick="closeAdminPasswordModal()"
-                                style="color:white;">×</button>
-                        </div>
-                        <div class="modal-body" style="padding:20px;">
-                            <div class="form-group">
-                                <label class="form-label">Enter Admin Password</label>
-                                <input type="password" class="form-input" id="adminPasswordInput" placeholder="Password"
-                                    onkeydown="if(event.key==='Enter')submitAdminPassword()">
-                            </div>
-                            <button class="btn btn-primary" onclick="submitAdminPassword()"
-                                style="width:100%; margin-top:10px;">
-                                Login
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Manage Booking Modal -->
-                <div id="manageModal" class="modal-overlay hidden">
-                    <div class="modal">
-                        <div class="modal-header">
-                            <span class="modal-title" id="modalTitle">Manage Booking</span>
-                            <button class="modal-close" onclick="closeManageModal()">×</button>
-                        </div>
-                        <div class="modal-body" id="modalBody">
-                            <!-- Lookup Form -->
-                            <div id="lookupForm">
-                                <div class="form-group">
-                                    <label class="form-label">Enter Booking Code</label>
-                                    <input type="text" class="form-input" id="bookingCodeInput" placeholder="NL-XXXX"
-                                        style="text-transform: uppercase;">
-                                </div>
-                                <button class="btn btn-primary" onclick="lookupBooking()" style="width: 100%;">Find
-                                    Booking</button>
-                            </div>
-
-                            <!-- Booking Details (hidden by default) -->
-                            <div id="bookingDetails" class="hidden">
-                                <div class="booking-details">
-                                    <div class="booking-detail-row">
-                                        <span class="booking-detail-label">Code:</span>
-                                        <span class="booking-detail-value" id="detailCode">-</span>
-                                    </div>
-                                    <div class="booking-detail-row">
-                                        <span class="booking-detail-label">Date:</span>
-                                        <span class="booking-detail-value" id="detailDate">-</span>
-                                    </div>
-                                    <div class="booking-detail-row">
-                                        <span class="booking-detail-label">Time:</span>
-                                        <span class="booking-detail-value" id="detailTime">-</span>
-                                    </div>
-                                    <div class="booking-detail-row">
-                                        <span class="booking-detail-label">Topic:</span>
-                                        <span class="booking-detail-value" id="detailTopic">-</span>
-                                    </div>
-                                    <div class="booking-detail-row">
-                                        <span class="booking-detail-label">Name:</span>
-                                        <span class="booking-detail-value" id="detailName">-</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group booking-only">
-                                    <label class="form-label">Change Topic</label>
-                                    <select class="form-input" id="editTopic">
-                                        <option value="">-- Keep Current --</option>
-                                        <option value="KYC/Onboarding">KYC/Onboarding</option>
-                                        <option value="SIP/Mandates">SIP/Mandates</option>
-                                        <option value="Statements/Tax Documents">Statements/Tax Documents</option>
-                                        <option value="Withdrawals">Withdrawals</option>
-                                        <option value="Account Changes">Account Changes</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group booking-only">
-                                    <label class="form-label">Change Name</label>
-                                    <input type="text" class="form-input" id="editName"
-                                        placeholder="Leave empty to keep current">
-                                </div>
-
-                                <div class="modal-actions">
-                                    <button class="btn btn-primary booking-only" onclick="saveBookingChanges()">💾 Save
-                                        Changes</button>
-                                    <button class="btn btn-danger" id="cancelBtn" onclick="deleteBooking()">🗑️
-                                        Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Confirmation Modal -->
-                        <div id="confirmModal" class="modal-overlay hidden">
-                            <div class="modal">
-                                <div class="modal-header">
-                                    <span class="modal-title" id="confirmTitle">Confirm Booking</span>
-                                    <button class="modal-close" onclick="closeConfirmModal()">×</button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="booking-details">
-                                        <div class="booking-detail-row">
-                                            <span class="booking-detail-label">Type:</span>
-                                            <span class="booking-detail-value" id="confirmType">-</span>
-                                        </div>
-                                        <div class="booking-detail-row">
-                                            <span class="booking-detail-label">Topic:</span>
-                                            <span class="booking-detail-value" id="confirmTopic">-</span>
-                                        </div>
-                                        <div class="booking-detail-row">
-                                            <span class="booking-detail-label">Date:</span>
-                                            <span class="booking-detail-value" id="confirmDate">-</span>
-                                        </div>
-                                        <div class="booking-detail-row">
-                                            <span class="booking-detail-label">Time:</span>
-                                            <span class="booking-detail-value" id="confirmTime">-</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Your Name (Optional)</label>
-                                        <input type="text" class="form-input" id="confirmName"
-                                            placeholder="Enter your name">
-                                    </div>
-
-                                    <div class="modal-actions">
-                                        <button class="btn btn-primary" onclick="proceedWithBooking()"
-                                            style="width: 100%; justify-content: center;">✅ Confirm & Book</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="disclaimer">
-                        This service is for informational and scheduling purposes only.
-                        It does not constitute investment advice.
-                    </div>
+                <div class="disclaimer">
+                    This service is for informational and scheduling purposes only.
+                    It does not constitute investment advice.
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Debug Panel (Right 30%) -->
@@ -1681,7 +1547,7 @@
             // Only show welcome if chat is empty to preserve history
             if (messagesContainer.children.length === 0) {
                 messagesContainer.innerHTML = '';
-                addMessage('assistant', "Let's proceed! What do you need advisory on?\\n\\nSelect a topic below:", null, false, { type: 'topic_selector' });
+                addMessage('assistant', "Let's proceed! What do you need advisory on?\n\nSelect a topic below:", null, false, { type: 'topic_selector' });
             }
         }
 
@@ -2126,7 +1992,14 @@
             try {
                 await fetch('/api/reset', { method: 'POST' });
                 messagesContainer.innerHTML = '';
-                addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+
+                if (currentView === 'hybrid') {
+                    // Hybrid mode gets interactive pills
+                    addMessage('assistant', "Let's proceed! What do you need advisory on?\n\nSelect a topic below:", null, false, { type: 'topic_selector' });
+                } else {
+                    // Pure Chat mode - text only, no widgets
+                    addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+                }
             } catch (error) {
                 console.error('Failed to reset chat:', error);
             }
@@ -2829,6 +2702,137 @@
             }
         }
     </script>
+
+    <!-- Admin Password Modal (root level) -->
+    <div id="adminPasswordModal" class="modal-overlay hidden">
+        <div class="modal" style="max-width:320px;">
+            <div class="modal-header" style="background:linear-gradient(135deg, #1e3a5f, #0d2137);">
+                <span class="modal-title" style="color:white;">🔐 Admin Login</span>
+                <button class="modal-close" onclick="closeAdminPasswordModal()" style="color:white;">×</button>
+            </div>
+            <div class="modal-body" style="padding:20px;">
+                <div class="form-group">
+                    <label class="form-label">Enter Admin Password</label>
+                    <input type="password" class="form-input" id="adminPasswordInput" placeholder="Password"
+                        onkeydown="if(event.key==='Enter')submitAdminPassword()">
+                </div>
+                <button class="btn btn-primary" onclick="submitAdminPassword()" style="width:100%; margin-top:10px;">
+                    Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Booking Modal (root level) -->
+    <div id="manageModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Manage Booking</span>
+                <button class="modal-close" onclick="closeManageModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Lookup Form -->
+                <div id="lookupForm">
+                    <div class="form-group">
+                        <label class="form-label">Enter Booking Code</label>
+                        <input type="text" class="form-input" id="bookingCodeInput" placeholder="NL-XXXX"
+                            style="text-transform: uppercase;">
+                    </div>
+                    <button class="btn btn-primary" onclick="lookupBooking()" style="width: 100%;">Find Booking</button>
+                </div>
+
+                <!-- Booking Details (hidden by default) -->
+                <div id="bookingDetails" class="hidden">
+                    <div class="booking-details">
+                        <div class="booking-detail-row">
+                            <span class="booking-detail-label">Code:</span>
+                            <span class="booking-detail-value" id="detailCode">-</span>
+                        </div>
+                        <div class="booking-detail-row">
+                            <span class="booking-detail-label">Date:</span>
+                            <span class="booking-detail-value" id="detailDate">-</span>
+                        </div>
+                        <div class="booking-detail-row">
+                            <span class="booking-detail-label">Time:</span>
+                            <span class="booking-detail-value" id="detailTime">-</span>
+                        </div>
+                        <div class="booking-detail-row">
+                            <span class="booking-detail-label">Topic:</span>
+                            <span class="booking-detail-value" id="detailTopic">-</span>
+                        </div>
+                        <div class="booking-detail-row">
+                            <span class="booking-detail-label">Name:</span>
+                            <span class="booking-detail-value" id="detailName">-</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group booking-only">
+                        <label class="form-label">Change Topic</label>
+                        <select class="form-input" id="editTopic">
+                            <option value="">-- Keep Current --</option>
+                            <option value="KYC/Onboarding">KYC/Onboarding</option>
+                            <option value="SIP/Mandates">SIP/Mandates</option>
+                            <option value="Statements/Tax Documents">Statements/Tax Documents</option>
+                            <option value="Withdrawals">Withdrawals</option>
+                            <option value="Account Changes">Account Changes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group booking-only">
+                        <label class="form-label">Change Name</label>
+                        <input type="text" class="form-input" id="editName" placeholder="Leave empty to keep current">
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn btn-primary booking-only" onclick="saveBookingChanges()">💾 Save
+                            Changes</button>
+                        <button class="btn btn-danger" id="cancelBtn" onclick="deleteBooking()">🗑️ Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal (root level) -->
+    <div id="confirmModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="confirmTitle">Confirm Booking</span>
+                <button class="modal-close" onclick="closeConfirmModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="booking-details">
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Type:</span>
+                        <span class="booking-detail-value" id="confirmType">-</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Topic:</span>
+                        <span class="booking-detail-value" id="confirmTopic">-</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Date:</span>
+                        <span class="booking-detail-value" id="confirmDate">-</span>
+                    </div>
+                    <div class="booking-detail-row">
+                        <span class="booking-detail-label">Time:</span>
+                        <span class="booking-detail-value" id="confirmTime">-</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Your Name (Optional)</label>
+                    <input type="text" class="form-input" id="confirmName" placeholder="Enter your name">
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="proceedWithBooking()"
+                        style="width: 100%; justify-content: center;">✅ Confirm & Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
