@@ -13,14 +13,6 @@ pip-delete-this-directory.txt
 # Environment Variables
 .env
 
-# Database
-
-
-# History and Logs
-history/*
-!history/.keep
-*.log
-
 # System
 .DS_Store
 

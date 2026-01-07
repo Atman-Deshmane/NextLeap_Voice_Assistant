@@ -111,13 +111,13 @@ def generate_audio(text: str) -> Optional[bytes]:
         # Get audio bytes from response
         audio_bytes = response.read()
         print(f"🔊 TTS Generated: {len(audio_bytes)} bytes")
+        return audio_bytes
+        
     except Exception as e:
         # Don't crash on TTS failure (rate limit, etc.)
-        err_msg = str(e)
-        print(f"⚠️ TTS Failed: {err_msg}")
-        return None, err_msg
-    
-    return audio_bytes, None
+        # Just log and return None - text response will still work
+        print(f"⚠️ TTS Failed (will show text only): {e}")
+        return None
 
 
 def audio_to_base64(audio_bytes: bytes) -> str:
