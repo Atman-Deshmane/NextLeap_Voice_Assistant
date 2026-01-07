@@ -2297,8 +2297,14 @@
                     chatTab.classList.add('active');
                     // Add chat-mode class to hide widgets via CSS
                     chatView.classList.add('chat-mode');
-                    // Show Chat welcome if chat is empty
-                    if (messagesContainer.children.length === 0) {
+
+                    // Check if only message is the Hybrid welcome (which lacks topic text)
+                    // If so, replace it with the Chat welcome that has topic bullets
+                    const firstMessage = messagesContainer.querySelector('.message-content');
+                    const isHybridWelcome = firstMessage && firstMessage.textContent.includes('Select a topic below:');
+
+                    if (messagesContainer.children.length === 0 || (messagesContainer.children.length === 1 && isHybridWelcome)) {
+                        messagesContainer.innerHTML = '';
                         addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
                     }
                 }
