@@ -208,11 +208,13 @@ def book_slot(
     booking_code = _generate_booking_code()
     logger.add_log(f"🎫 Generated booking code: {booking_code}", "success")
     
+    # Create slot with placeholder for calendar event ID
     store["slots"][date_str][time_str] = {
         "status": "booked",
         "booking_id": booking_code,
         "topic": topic,
-        "user_alias": user_alias
+        "user_alias": user_alias,
+        "calendar_event_id": None  # Will be updated after calendar creation
     }
     
     _save_store(store)
@@ -221,6 +223,7 @@ def book_slot(
     # Create Google Calendar event (synchronous)
     calendar_success = False
     event_link = None
+    calendar_event_id = None
     
     try:
         logger.add_log(f"📅 Connecting to Google Calendar Service Account...", "info")
@@ -235,8 +238,8 @@ def book_slot(
         end_time_iso = (booking_datetime + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S+05:30")
         
         # Create event (without attendee - service accounts can't invite without domain-wide delegation)
-        # Note: Email notifications would require domain-wide delegation setup in Google Workspace
-        event_link = create_event(
+        # Returns dict with 'event_id' and 'html_link'
+        calendar_result = create_event(
             summary=f"HDFC Mutual Funds - {topic} Consultation",
             start_time_iso=start_time_iso,
             end_time_iso=end_time_iso,
@@ -249,12 +252,17 @@ This is an automated booking from HDFC Mutual Funds Advisor Scheduler.
 """
         )
         
-        calendar_success = event_link is not None
-        
-        if calendar_success:
-            logger.add_log(f"✅ Google Calendar event created successfully", "success")
+        if calendar_result:
+            calendar_event_id = calendar_result.get('event_id')
+            event_link = calendar_result.get('html_link')
+            calendar_success = True
+            
+            # Update slot with calendar event ID for later deletion
+            store["slots"][date_str][time_str]["calendar_event_id"] = calendar_event_id
+            _save_store(store)
+            logger.add_log(f"✅ Google Calendar event created: {calendar_event_id}", "success")
         else:
-            logger.add_log(f"⚠️ Calendar API returned no event link", "warning")
+            logger.add_log(f"⚠️ Calendar API returned no result", "warning")
         
     except Exception as e:
         logger.add_log(f"❌ Google Calendar error: {str(e)}", "error")
@@ -302,6 +310,21 @@ def cancel_booking(booking_code: str) -> Dict[str, Any]:
     for date_str, times in store["slots"].items():
         for time_str, slot_data in times.items():
             if slot_data.get("booking_id") == booking_code:
+                # Get the calendar event ID before we modify the slot
+                calendar_event_id = slot_data.get("calendar_event_id")
+                
+                # Delete from Google Calendar first
+                if calendar_event_id:
+                    try:
+                        from services.google_calendar import delete_event
+                        delete_success = delete_event(calendar_event_id)
+                        if delete_success:
+                            logger.add_log(f"🗑️ Deleted from Google Calendar: {calendar_event_id}", "success")
+                        else:
+                            logger.add_log(f"⚠️ Could not delete from Google Calendar", "warning")
+                    except Exception as e:
+                        logger.add_log(f"⚠️ Calendar deletion error: {str(e)}", "warning")
+                
                 # Found the booking - check if there's someone on waitlist for this specific slot
                 promoted_user = None
                 waitlist_entry = None
@@ -320,9 +343,12 @@ def cancel_booking(booking_code: str) -> Dict[str, Any]:
                         "status": "booked",
                         "booking_id": new_booking_code,
                         "topic": promoted_user["topic"],
-                        "user_alias": promoted_user["user_alias"]
+                        "user_alias": promoted_user["user_alias"],
+                        "calendar_event_id": None  # Will need new calendar event for promoted user
                     }
                     _save_store(store)
+                    
+                    # TODO: Create new calendar event for promoted user
                     
                     return {
                         "status": "success",
@@ -341,7 +367,8 @@ def cancel_booking(booking_code: str) -> Dict[str, Any]:
                         "status": "available",
                         "booking_id": None,
                         "topic": None,
-                        "user_alias": None
+                        "user_alias": None,
+                        "calendar_event_id": None
                     }
                     _save_store(store)
                 

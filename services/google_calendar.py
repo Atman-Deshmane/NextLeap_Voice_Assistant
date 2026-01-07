@@ -59,7 +59,7 @@ def create_event(
     end_time_iso: str,
     description: str,
     attendee_email: Optional[str] = None
-) -> Optional[str]:
+) -> Optional[dict]:
     """
     Create a Google Calendar event.
     
@@ -71,7 +71,7 @@ def create_event(
         attendee_email: Optional email for attendee (default: None)
         
     Returns:
-        HTML link to the created event, or None if creation failed
+        Dict with 'event_id' and 'html_link', or None if creation failed
     """
     try:
         service = _get_calendar_service()
@@ -108,10 +108,14 @@ def create_event(
             sendUpdates='all' if attendee_email else 'none'  # Send email if attendee provided
         ).execute()
         
+        event_id = created_event.get('id')
         event_link = created_event.get('htmlLink')
         print(f"📅 Google Calendar event created: {event_link}")
         
-        return event_link
+        return {
+            'event_id': event_id,
+            'html_link': event_link
+        }
         
     except ValueError as e:
         print(f"❌ Calendar Error: {e}")
@@ -122,6 +126,43 @@ def create_event(
     except Exception as e:
         print(f"❌ Unexpected Calendar Error: {e}")
         return None
+
+
+def delete_event(event_id: str) -> bool:
+    """
+    Delete a Google Calendar event by its ID.
+    
+    Args:
+        event_id: The Google Calendar event ID
+        
+    Returns:
+        True if deleted successfully, False otherwise
+    """
+    if not event_id:
+        print("⚠️ No event ID provided for deletion")
+        return False
+    
+    try:
+        service = _get_calendar_service()
+        
+        # Delete the event
+        service.events().delete(
+            calendarId='primary',
+            eventId=event_id
+        ).execute()
+        
+        print(f"🗑️ Google Calendar event deleted: {event_id}")
+        return True
+        
+    except HttpError as e:
+        if e.resp.status == 404:
+            print(f"⚠️ Calendar event not found (may already be deleted): {event_id}")
+            return True  # Consider it successful if already gone
+        print(f"❌ Google Calendar API Error: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Failed to delete calendar event: {e}")
+        return False
 
 
 def test_connection() -> bool:
@@ -140,3 +181,4 @@ def test_connection() -> bool:
     except Exception as e:
         print(f"❌ Google Calendar connection failed: {e}")
         return False
+
