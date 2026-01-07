@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-07T20:21:00.176947",
+    "user": "I want to discuss Statements/Tax Docs",
+    "agent": "I can help you schedule that. Here are the earliest available slots for a discussion on **Statements/Tax Docs**:\n\n*   **Tuesday, January 13, 2026**: 02:00 PM or 03:00 PM IST\n*   **Wednesday, January 14, 2026**: 02:00 PM or 03:00 PM IST\n\nWould you like to book one of these times, or should I check another date for you? Also, please let me know if you'd like to provide a name for the booking (otherwise, I will use \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-07T20:21:09.340959",
+    "user": "Book 14:00 on 2026-01-13",
+    "agent": "Your appointment has been successfully booked!\n\n**Booking Details:**\n*   **Topic:** Statements/Tax Docs\n*   **Date:** Tuesday, January 13, 2026\n*   **Time:** 02:00 PM IST\n*   **Booking Code:** **NL-B2RJ**\n\nPlease keep this booking code for your records should you need to reschedule or cancel your appointment. Is there anything else I can help you with?",
+    "audio_file": null
+  }
+]

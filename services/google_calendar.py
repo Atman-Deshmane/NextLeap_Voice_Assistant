@@ -102,11 +102,25 @@ def create_event(
             event['attendees'] = [{'email': attendee_email}]
         
         # Create the event in the primary calendar
-        created_event = service.events().insert(
-            calendarId='primary',
-            body=event,
-            sendUpdates='all' if attendee_email else 'none'  # Send email if attendee provided
-        ).execute()
+        # Try with attendee first, fall back to no attendee if service account limitation
+        try:
+            created_event = service.events().insert(
+                calendarId='primary',
+                body=event,
+                sendUpdates='all' if attendee_email else 'none'
+            ).execute()
+        except HttpError as attendee_error:
+            if 'forbiddenForServiceAccounts' in str(attendee_error):
+                # Service account can't add attendees - remove and retry
+                print(f"⚠️ Service account cannot add attendees, creating event without attendee")
+                event.pop('attendees', None)
+                created_event = service.events().insert(
+                    calendarId='primary',
+                    body=event,
+                    sendUpdates='none'
+                ).execute()
+            else:
+                raise attendee_error
         
         event_id = created_event.get('id')
         event_link = created_event.get('htmlLink')
