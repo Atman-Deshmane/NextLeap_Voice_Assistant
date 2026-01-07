@@ -229,6 +229,7 @@ def book_slot(
         logger.add_log(f"📅 Connecting to Google Calendar Service Account...", "info")
         from services.google_calendar import create_event
         from datetime import datetime, timedelta
+        import os
         
         # Parse the date and time
         booking_datetime = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M")
@@ -237,7 +238,10 @@ def book_slot(
         start_time_iso = booking_datetime.strftime("%Y-%m-%dT%H:%M:%S+05:30")
         end_time_iso = (booking_datetime + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S+05:30")
         
-        # Create event (without attendee - service accounts can't invite without domain-wide delegation)
+        # Get attendee email from environment variable (fallback to default)
+        attendee_email = os.getenv("CALENDAR_ATTENDEE_EMAIL", "atmandeshmane123@gmail.com")
+        
+        # Create event with attendee for email notifications
         # Returns dict with 'event_id' and 'html_link'
         calendar_result = create_event(
             summary=f"HDFC Mutual Funds - {topic} Consultation",
@@ -249,7 +253,8 @@ def book_slot(
 - User: {user_alias}
 
 This is an automated booking from HDFC Mutual Funds Advisor Scheduler.
-"""
+""",
+            attendee_email=attendee_email
         )
         
         if calendar_result:
