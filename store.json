@@ -64,11 +64,11 @@
         "user_alias": null
       },
       "15:00": {
-        "status": "booked",
-        "booking_id": "NL-AZJ7",
-        "topic": "SIP/Mandates",
-        "user_alias": "Bruce Wayne",
-        "calendar_event_id": "cjf7halfn386op47ta7p8b83h4"
+        "status": "available",
+        "booking_id": null,
+        "topic": null,
+        "user_alias": null,
+        "calendar_event_id": null
       }
     },
     "2026-01-14": {
