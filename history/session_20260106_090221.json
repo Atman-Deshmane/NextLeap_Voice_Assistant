@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2026-01-06T09:02:27.231261",
+    "user": " Can we book for 2 pm on 16th January regarding KYC?",
+    "agent": "The 2:00 PM (14:00) slot on Friday, January 16th, is available for your KYC/Onboarding session.\n\nWould you like me to book this for you under a specific name or alias? If not, I can proceed with \"Anonymous\".",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T09:02:56.274750",
+    "user": " Now let's change the topic to withdrawals.",
+    "agent": "Understood. I've updated the topic to **Withdrawals**. \n\nThe 2:00 PM (14:00) slot on Friday, January 16th, is still available. Would you like to proceed with the booking? Please let me know if you'd like to use a specific name or if I should book it as \"Anonymous\".",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T09:03:15.132402",
+    "user": " Are there any slots available on 17th June?",
+    "agent": "I'm sorry, but our booking window is currently limited to dates between January 7, 2026, and January 21, 2026. \n\nI cannot check availability for June 17th. Would you like to check a date within the current range instead?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T09:03:34.861787",
+    "user": " Okay, what about January 19th?",
+    "agent": "For Monday, January 19th, both the 2:00 PM (14:00) and 3:00 PM (15:00) slots are currently available for your session regarding **Withdrawals**.\n\nWhich of these times would you prefer? Also, please let me know if you would like to provide a name for the booking.",
+    "audio_file": null
+  }
+]

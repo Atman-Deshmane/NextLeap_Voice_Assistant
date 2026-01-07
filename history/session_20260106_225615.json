@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2026-01-06T22:56:18.056694",
+    "user": "What are all the topics",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nThe available topics for your appointment are:\n*   **KYC/Onboarding**\n*   **SIP/Mandates**\n*   **Statements/Tax Docs**\n*   **Withdrawals**\n*   **Account Changes**\n\nPlease let me know which of these topics you would like to discuss, and then we can look at available dates and times for your session.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T22:59:11.620888",
+    "user": "12th Jan",
+    "agent": "I would be happy to help you check availability for January 12, 2026. However, before we proceed, I must confirm the topic of your appointment.\n\nCould you please let me know which of these topics you would like to discuss?\n*   **KYC/Onboarding**\n*   **SIP/Mandates**\n*   **Statements/Tax Docs**\n*   **Withdrawals**\n*   **Account Changes**\n\nOnce you choose a topic, I will immediately check the available slots for you on that date.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T22:59:22.396709",
+    "user": "SIP",
+    "agent": "Thank you for confirming. I have checked the schedule for January 12, 2026, for your **SIP/Mandates** appointment.\n\nThere is one slot available:\n*   **3:00 PM (15:00)**\n\nWould you like to book this slot? If so, please let me know. You can also provide a name or alias for the booking, or I can book it as \"Anonymous\".",
+    "audio_file": null
+  }
+]

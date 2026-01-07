@@ -1,0 +1,44 @@
+[
+  {
+    "timestamp": "2026-01-06T19:12:39.264050",
+    "user": " I have a book about statements on 17th January",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nIt sounds like you are referring to a booking regarding **Statements/Tax Docs**. However, I should note that our advisor appointments are only available on weekdays, and January 17, 2026, falls on a Saturday.\n\nTo help you clarify or locate your appointment, could you please provide:\n1. The **Booking Code** (e.g., NL-X99Z), OR\n2. The **Name/Alias** you used when scheduling?\n\nThis will allow me to check our records and assist you with any changes or confirmations.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:13:07.467403",
+    "user": "I want to discuss Statements/Tax Docs",
+    "agent": "I've confirmed the topic as **Statements/Tax Docs**. \n\nSince there are no appointments available on January 17th (as it is a Saturday), I have checked our upcoming availability for you. Here are the next two available slots:\n\n1. **Wednesday, January 14, 2026, at 3:00 PM (15:00 IST)**\n2. **Thursday, January 15, 2026, at 2:00 PM (14:00 IST)**\n\nWould you like to book one of these slots? If so, please let me know which one you prefer and if you would like to provide a name/alias for the booking (otherwise, I will use \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:13:20.781980",
+    "user": " .",
+    "agent": "I'm sorry, I didn't quite catch that. Would you like to book one of the available slots for your **Statements/Tax Docs** discussion?\n\nHere are the options again:\n1. **Wednesday, January 14, 2026, at 3:00 PM (15:00 IST)**\n2. **Thursday, January 15, 2026, at 2:00 PM (14:00 IST)**\n\nPlease let me know which date and time works best for you, or if you'd like me to check a different date.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:13:30.976109",
+    "user": " Thank you.",
+    "agent": "You're very welcome! \n\nJust to confirm, would you like to secure one of the slots we discussed for your **Statements/Tax Docs** appointment?\n\n*   **January 14th at 3:00 PM**\n*   **January 15th at 2:00 PM**\n\nIf neither of these work, or if you're all set for now, just let me know! I'm here to help whenever you're ready.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:14:01.354564",
+    "user": " Thank you.",
+    "agent": "You're very welcome! \n\nSince no slot has been booked yet, please feel free to reach out if you decide you'd like to schedule an appointment for **Statements/Tax Docs** or any other topic in the future. \n\nHave a great day!",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:14:16.591614",
+    "user": " ...at EPL...",
+    "agent": "I understand you'd like to use the name \"**EPL**\" for your booking. \n\nTo proceed with your appointment for **Statements/Tax Docs**, which of these available slots would you like to book?\n\n1. **Wednesday, January 14, 2026, at 3:00 PM (15:00 IST)**\n2. **Thursday, January 15, 2026, at 2:00 PM (14:00 IST)**\n\nOnce you choose a slot, I will finalize the booking for you.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:14:35.844894",
+    "user": " January 14th at 3 p.m.",
+    "agent": "Your appointment has been successfully booked!\n\n**Booking Details:**\n- **Topic:** Statements/Tax Docs\n- **Date:** January 14, 2026\n- **Time:** 3:00 PM (15:00 IST)\n- **Name:** EPL\n- **Booking Code:** **NL-JXCS**\n\nThe event has been automatically added to your Google Calendar. Please keep your booking code handy if you need to reschedule or cancel in the future. Is there anything else I can help you with?",
+    "audio_file": null
+  }
+]

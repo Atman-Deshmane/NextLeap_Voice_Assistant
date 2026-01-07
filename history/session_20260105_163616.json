@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2026-01-05T16:36:20.537130",
+    "user": "I want to book a meeting regarding mutual funds withdrawals on 9th January 3 p.m.",
+    "agent": "It appears that there are no available slots for January 9th, 2026. \n\nWould you like me to check for available dates around that time, or would you prefer to be added to the waitlist for January 9th for the \"Withdrawals\" topic? Alternatively, I can provide a list of all dates that currently have open slots.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T16:44:40.125286",
+    "user": " Okay, can you add me to the waitlist?",
+    "agent": "I have successfully added you to the waitlist for January 9th, 2026, regarding **Withdrawals**. Your waitlist ID is **NL-2O2O**, and you are at position 2.\n\nWould you like me to check for other available dates so you can secure a confirmed booking in the meantime?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T17:00:45.958152",
+    "user": " I want to book a slot regarding withdrawals on 9th January 2 PM.",
+    "agent": "I'm sorry, but as I checked previously, there are currently no slots available on January 9th, including the 2 PM slot. You are already on the waitlist for this date (ID: **NL-2O2O**).\n\nWould you like me to find the next available date for a confirmed appointment regarding **Withdrawals**? I can also provide a list of all currently available dates.",
+    "audio_file": null
+  }
+]

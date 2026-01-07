@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-06T17:58:58.400607",
+    "user": "I want to discuss KYC/Onboarding",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI can certainly help you schedule an appointment to discuss **KYC/Onboarding**. \n\nSince today is Tuesday, January 6, 2026, our advisors are available for bookings starting from tomorrow, January 7, through January 21, 2026. Appointments are held on weekdays at 2:00 PM and 3:00 PM IST.\n\nCould you please let me know which date you would prefer?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T17:59:53.102202",
+    "user": "Check slots on January 7",
+    "agent": "I'm sorry, but there are no slots available on Wednesday, January 7, 2026.\n\nI can add you to the **waitlist** for that date if you'd like. Alternatively, we have availability on the following dates:\n*   Wednesday, January 14\n*   Thursday, January 15\n*   Friday, January 16\n*   Monday, January 19\n*   Wednesday, January 21\n\nWould you like to be added to the waitlist for Jan 7, or would you prefer to check availability for one of these other dates?",
+    "audio_file": null
+  }
+]

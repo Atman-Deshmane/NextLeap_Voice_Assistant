@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-06T18:38:13.687298",
+    "user": "I want to discuss Statements/Tax Docs",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI've noted that you would like to discuss **Statements/Tax Docs**. \n\nHere are the next two available appointments:\n1. **Wednesday, January 14, 2026 at 15:00 (3 PM)**\n2. **Thursday, January 15, 2026 at 14:00 (2 PM)**\n\nWould you like to book one of these slots, or should I check for other dates? Also, please let me know if you'd like to provide a name for the booking (otherwise, I will use \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T18:38:36.316361",
+    "user": "Book 14:00 on 2026-01-19",
+    "agent": "Your appointment has been successfully booked!\n\n**Booking Details:**\n- **Topic:** Statements/Tax Docs\n- **Date:** Monday, January 19, 2026\n- **Time:** 14:00 (2 PM)\n- **Booking Code:** **NL-IF8N**\n\nThe event has been added to your Google Calendar. Please keep the booking code handy if you need to reschedule or cancel your appointment. Is there anything else I can help you with?",
+    "audio_file": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2026-01-06T17:44:10.793117",
+    "user": " Hi, can we book it for 20th January at 2pm regarding mutual funds?",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI'd be happy to help you with that! To ensure I connect you with the right advisor, could you please specify the topic of your appointment? You can choose from one of the following:\n\n*   **KYC/Onboarding**\n*   **SIP/Mandates**\n*   **Statements/Tax Docs**\n*   **Withdrawals**\n*   **Account Changes**\n\nOnce you confirm the topic, I will check the availability for January 20th at 2:00 PM for you.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T17:45:13.185746",
+    "user": " Okay, the topic is statements.",
+    "agent": "Great, \"Statements/Tax Docs\" is a valid topic. I have checked the availability for January 20th, 2026, and the 2:00 PM (14:00) slot is indeed available!\n\nTo finalize the booking, would you like to provide a name or alias for the appointment? If not, I can proceed with \"Anonymous.\"",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T17:45:29.964223",
+    "user": " Yeah. Here's what it means.",
+    "agent": "I'm sorry, I didn't quite catch the name or alias you'd like to use for the booking. \n\nWould you like me to use a specific name, or should I proceed with **\"Anonymous\"**? Once confirmed, I'll finalize your appointment for **January 20th at 2:00 PM** for **Statements/Tax Docs**.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T17:45:49.290610",
+    "user": " look it under the name Batman",
+    "agent": "Excellent, Batman! Your appointment is confirmed.\n\n**Booking Details:**\n*   **Topic:** Statements/Tax Docs\n*   **Date:** January 20, 2026\n*   **Time:** 2:00 PM (14:00) IST\n*   **Booking Code:** NL-QTPY\n\nPlease visit this secure link to complete your details: https://hdfc.mf/secure/NL-QTPY\n\nIs there anything else I can help you with today?",
+    "audio_file": null
+  }
+]

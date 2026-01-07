@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-06T18:33:09.249303",
+    "user": "I want to discuss Statements/Tax Docs",
+    "agent": "I have found the following available slots for your discussion on **Statements/Tax Docs**:\n\n1. **Wednesday, January 14, 2026, at 3:00 PM (15:00)**\n2. **Thursday, January 15, 2026, at 2:00 PM (14:00)**\n\nWould you like to book one of these? Also, please let me know if you'd like to provide a name or alias for the booking (otherwise, I will use \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T18:34:12.274813",
+    "user": "Add me to waitlist for 14:00 on 2026-01-20",
+    "agent": "I have successfully added you to the waitlist for **January 20, 2026, at 2:00 PM (14:00)** for the topic **Statements/Tax Docs**.\n\n**Waitlist ID:** NL-BZ99 (Position: 1)\n\nIf a slot becomes available, we will notify you. In the meantime, would you like to explore any of the available slots on January 14th or 15th that I mentioned earlier?",
+    "audio_file": null
+  }
+]

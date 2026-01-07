@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2026-01-04T19:06:46.857629",
+    "user": "2pm on 9th jan about account changes",
+    "agent": "I've checked our schedule for January 9th, and unfortunately, there are no slots available at 2:00 PM or 3:00 PM on that day.\n\nWould you like me to add you to the **waitlist** for January 9th for your Account Changes inquiry, or would you prefer to check availability for another date? I can also provide a list of dates that currently have open slots.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T19:07:46.589508",
+    "user": "book any available slot on 12th jan for Bruce Wayne about account changes",
+    "agent": "It appears that January 12th is also fully booked. \n\nSince you're looking for an appointment for **Account Changes**, would you like me to add **Bruce Wayne** to the waitlist for January 12th? \n\nAlternatively, I can check for the next available date or provide you with a list of all dates that currently have open slots. Which would you prefer?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T19:08:41.337287",
+    "user": "Yes, add me to the waitlist for Jan 12th.",
+    "agent": "I have successfully added **Bruce Wayne** to the waitlist for **January 12th** regarding **Account Changes**. Your waitlist ID is **NL-2ITP**, and you are currently at position 1.\n\nIf a slot becomes available, we will notify you. In the meantime, would you like me to check for available slots on any other dates?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T19:10:04.261232",
+    "user": "Show me available slots for any date.",
+    "agent": "We have several dates available for your appointment. Here are the earliest options:\n\n*   **Wednesday, January 7th:** 2:00 PM and 3:00 PM IST\n*   **Tuesday, January 13th:** 2:00 PM and 3:00 PM IST\n\nSlots are also available on **January 14th, 15th, 16th, 19th, 20th, and 21st**.\n\nWould you like to book one of these for your **Account Changes** inquiry, or should I check the specific times for another date?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T19:11:22.516789",
+    "user": "Book 2pm on Jan 7th for Bruce Wayne.",
+    "agent": "Your appointment has been successfully booked!\n\n**Booking Details:**\n*   **User:** Bruce Wayne\n*   **Topic:** Account Changes\n*   **Date:** January 7th, 2026\n*   **Time:** 2:00 PM IST\n*   **Booking Code:** NL-INGJ\n\nThe event has been automatically added to your Google Calendar. Please use this secure link to complete any additional details required for your appointment: https://hdfc.mf/secure/NL-INGJ\n\nIs there anything else I can help you with today?",
+    "audio_file": null
+  }
+]

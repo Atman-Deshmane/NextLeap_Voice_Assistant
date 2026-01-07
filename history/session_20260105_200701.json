@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2026-01-05T20:07:06.654049",
+    "user": "Okay, what about jan 12th?",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nTo help you check for availability on January 12th, could you please confirm the topic of your appointment? Our advisors can assist with:\n* KYC/Onboarding\n* SIP/Mandates\n* Statements/Tax Docs\n* Withdrawals\n* Account Changes",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T20:07:18.612620",
+    "user": "I want to discuss KYC/Onboarding",
+    "agent": "I'm sorry, but there are no slots available on Monday, January 12th. \n\nWould you like me to add you to the **waitlist** for that date? Alternatively, the next available dates with open slots are starting from **Wednesday, January 14th**. \n\nWould you like to check availability for January 14th or another date?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T20:07:33.071008",
+    "user": "Jan 14?",
+    "agent": "On Wednesday, January 14th, we have one slot available at **3:00 PM (15:00 IST)** for your KYC/Onboarding discussion.\n\nWould you like to book this slot? If so, please let me know your name or alias (otherwise, I can book it as \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T20:07:40.313488",
+    "user": "Book 15:00 on 2026-01-14",
+    "agent": "Your appointment for **KYC/Onboarding** has been successfully booked!\n\n**Booking Details:**\n*   **Date:** Wednesday, January 14, 2026\n*   **Time:** 3:00 PM (15:00 IST)\n*   **Booking Code:** NL-E5C2\n*   **Status:** Confirmed and added to your Google Calendar.\n\nPlease use this secure link to complete your details before the appointment: https://hdfc.mf/secure/NL-E5C2\n\nIs there anything else I can assist you with today?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T20:11:33.801769",
+    "user": "Okay, can we cancel this booking?",
+    "agent": "Your booking for January 14th at 3:00 PM (Code: NL-E5C2) has been successfully cancelled.\n\nIs there anything else I can help you with? For example, would you like to check availability for a different date or time?",
+    "audio_file": null
+  }
+]

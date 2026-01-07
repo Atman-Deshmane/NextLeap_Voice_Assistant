@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2026-01-05T19:57:30.377177",
+    "user": "I want to book an appointment",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI'd be happy to help you schedule an appointment with an expert advisor. To get started, could you please let me know the topic of your appointment? \n\nThe available topics are:\n- KYC/Onboarding\n- SIP/Mandates\n- Statements/Tax Docs\n- Withdrawals\n- Account Changes",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T19:58:09.303423",
+    "user": "I want to discuss KYC/Onboarding",
+    "agent": "Great, I can help you schedule an appointment for KYC/Onboarding. \n\nAppointments are available starting from Wednesday, January 7th through January 21st, on weekdays at 2:00 PM and 3:00 PM IST. \n\nDo you have a specific date in mind during that period? Or would you like me to check the availability for a particular day?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T19:58:59.538398",
+    "user": "Any slots on Jan 7?",
+    "agent": "I'm sorry, but there are no available slots on January 7, 2026. \n\nHowever, I can offer you the following options:\n1. I can add you to the **waitlist** for January 7th, and we'll notify you if a slot becomes available.\n2. We have openings starting from **January 13, 2026**.\n\nWould you like to be added to the waitlist for the 7th, or would you prefer to pick a different date?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T19:59:44.489237",
+    "user": "How about Jan 13?",
+    "agent": "On January 13, 2026, we have one slot available at **3:00 PM (15:00) IST**.\n\nWould you like to book this slot for your KYC/Onboarding discussion? If so, please let me know your name (or an alias), or I can proceed with \"Anonymous\".",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T20:00:38.857537",
+    "user": "Book 15:00 on 2026-01-13",
+    "agent": "Your appointment for **KYC/Onboarding** has been successfully booked!\n\n**Booking Details:**\n- **Date:** January 13, 2026\n- **Time:** 3:00 PM (15:00) IST\n- **Booking Code:** NL-TUET\n- **Name:** Anonymous\n\nThis appointment has been automatically added to your Google Calendar. \n\nTo complete your details securely, please visit: https://hdfc.mf/secure/NL-TUET\n\nIs there anything else I can assist you with today?",
+    "audio_file": null
+  }
+]

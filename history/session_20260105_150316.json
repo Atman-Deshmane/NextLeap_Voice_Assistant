@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-05T15:03:20.302769",
+    "user": " Obrigado.",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nYou're welcome! How can I assist you with scheduling an appointment today? \n\nTo get started, please let me know which of the following topics you would like to discuss with an advisor:\n*   KYC/Onboarding\n*   SIP/Mandates\n*   Statements/Tax Docs\n*   Withdrawals\n*   Account Changes",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T15:03:37.666647",
+    "user": " I want to book a meeting regarding mutual funds withdrawals on 9th January 3 p.m.",
+    "agent": "I'm sorry, but all slots for January 9th are currently fully booked.\n\nI can offer you two options:\n1.  **Waitlist:** I can add you to the waitlist for January 9th for the \"Withdrawals\" topic.\n2.  **Alternative Date:** I have an available slot on **January 7th at 3:00 PM (15:00)** or on **January 13th at 3:00 PM (15:00)**.\n\nWould you like to be added to the waitlist for the 9th, or would you prefer to book one of these alternative slots? (Please also let me know if you'd like to use a specific name for the booking; otherwise, I will use \"Anonymous\".)",
+    "audio_file": null
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2026-01-06T21:40:29.095203",
+    "user": " I want to schedule regarding statements",
+    "agent": "I have found the following available slots for your appointment regarding **Statements/Tax Docs**:\n\n1. **Monday, January 12, 2026, at 15:00 (3 PM IST)**\n2. **Tuesday, January 13, 2026, at 14:00 (2 PM IST)**\n\nWould you like to book one of these slots? Also, please let me know if you would like to provide a name for the booking (otherwise, I will use \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T21:41:48.532950",
+    "user": " Can you add me to the waitlist on 8th Jan at 2 PM?",
+    "agent": "I have successfully added you to the waitlist for **January 8, 2026, at 14:00 (2 PM IST)** regarding your **Statements/Tax Docs**. \n\nYour waitlist ID is **NL-PY9B**. You are currently at position **1** on the list. We will notify you if this slot becomes available.\n\nWould you like help with anything else?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T21:42:36.488007",
+    "user": " okay now let us cancel this and add me to an open slot on January 12th",
+    "agent": "I have successfully booked your appointment for **Monday, January 12, 2026, at 15:00 (3 PM IST)** for the topic **Statements/Tax Docs**.\n\nYour booking code is **NL-H5SR**. The appointment has been automatically added to your Google Calendar.\n\n(Regarding the waitlist: since it was a waitlist entry and not a confirmed booking, it has been noted that you've moved to a confirmed slot instead.)\n\nIs there anything else I can assist you with today?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T21:43:16.429885",
+    "user": "I want to manage an existing booking",
+    "agent": "I can help you with that. To locate your existing booking, could you please provide your **Booking Code**? \n\nIf you don't have the code, you can provide the **name/alias** used for the booking, along with the **date** or **time**, and I will find it for you.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T21:43:22.773316",
+    "user": "NL-H5SR",
+    "agent": "I have found your booking (Code: **NL-H5SR**). Here are the details:\n\n*   **Topic:** Statements/Tax Docs\n*   **Date:** Monday, January 12, 2026\n*   **Time:** 15:00 (3 PM IST)\n*   **Name:** Anonymous\n\nHow would you like to manage this? I can **cancel** the booking for you or **reschedule** it to a different available time.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T21:43:33.675391",
+    "user": "Cancel this",
+    "agent": "Your booking for **January 12, 2026, at 15:00** (Booking Code: **NL-H5SR**) has been successfully cancelled. The slot is now available for others.\n\nIs there anything else I can help you with today?",
+    "audio_file": null
+  }
+]

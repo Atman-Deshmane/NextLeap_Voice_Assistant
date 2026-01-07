@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-04T19:04:07.638870",
+    "user": "2pm on 9th jan about account changes",
+    "agent": "It looks like the 2:00 PM (14:00) slot on January 9th is currently unavailable, but I do have a **3:00 PM (15:00)** slot open on that day.\n\nWould you like to book the 3:00 PM slot, or would you prefer to check another date? Alternatively, I can add you to the waitlist for the 2:00 PM slot.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T19:04:20.435339",
+    "user": "Keep it under the name Bruce Wayne",
+    "agent": "Great! I have successfully booked your appointment.\n\n**Booking Details:**\n*   **Topic:** Account Changes\n*   **Date:** January 9, 2026\n*   **Time:** 3:00 PM (15:00) IST\n*   **Name:** Bruce Wayne\n*   **Booking Code:** NL-TQD2\n\nThe appointment has been added to your Google Calendar. To complete your details securely, please visit: https://hdfc.mf/secure/NL-TQD2\n\nIs there anything else I can assist you with today?",
+    "audio_file": null
+  }
+]

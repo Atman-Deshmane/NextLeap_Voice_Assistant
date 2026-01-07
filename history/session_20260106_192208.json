@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2026-01-06T19:22:16.989796",
+    "user": "I want to discuss SIP/Mandates",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI have noted that you would like to discuss **SIP/Mandates**. \n\nI have checked our upcoming availability for you. Here are the next available slots:\n1. **Thursday, January 15, 2026** at **14:00 (2 PM)**\n2. **Friday, January 16, 2026** at **14:00 (2 PM)**\n\nWould you like to book one of these slots, or should I check for other times on Jan 16th? Also, please let me know if you would like to provide a name for the booking (defaults to \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:22:32.529848",
+    "user": "Add me to waitlist for 15:00 on 2026-01-15",
+    "agent": "I have successfully added you to the waitlist for **January 15, 2026**, at **15:00 (3 PM)** for your **SIP/Mandates** discussion. \n\nYour waitlist ID is **NL-BGCH**. You are currently at position **1**. We will notify you if this slot becomes available.\n\nIs there anything else I can help you with today?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:22:45.227890",
+    "user": "I want to manage an existing booking",
+    "agent": "I can certainly help you with that. To locate your booking, please provide your **Booking Code** (e.g., \"NL-X99Z\"). \n\nAlternatively, if you don't have the code, you can provide the **Name/Alias** used and the **Time** of the appointment. Once located, I can assist you with rescheduling or canceling the appointment.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:23:01.797455",
+    "user": "NL-BGCH",
+    "agent": "The code **NL-BGCH** is currently associated with your **waitlist entry** for January 15, 2026, at 15:00. \n\nSince this is a waitlist spot and not yet a confirmed booking, would you like to:\n1. **Cancel** this waitlist entry?\n2. **Check for available slots** on other dates to get a confirmed booking instead?\n3. **Keep it** and wait for a notification?\n\nPlease let me know how you would like to proceed.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T19:23:16.663777",
+    "user": "Cancel",
+    "agent": "I apologize, but I cannot cancel the waitlist entry using the standard cancellation tool as it only processes confirmed booking codes. \n\nSince you are currently on the waitlist for **January 15th at 15:00**, would you like me to try and find a **confirmed** slot on a different day for your **SIP/Mandates** discussion instead? \n\nI have confirmed availability on **Friday, January 16th** at **14:00 (2 PM)** or **15:00 (3 PM)**. Would you like to book one of those?",
+    "audio_file": null
+  }
+]

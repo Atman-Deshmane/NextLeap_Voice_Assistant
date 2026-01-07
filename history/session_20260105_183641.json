@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2026-01-05T18:36:45.793263",
+    "user": "Can you cancel my booking with ID NL-72WH?",
+    "agent": "I'm sorry, but I couldn't find a booking with the ID **NL-72WH**. \n\nPlease double-check the booking code and try again. Alternatively, if you don't have the code, I can try to find your booking using the name/alias and time you used when scheduling.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T18:37:26.996275",
+    "user": "Can you cancel my booking with ID NL-IVWM",
+    "agent": "Your booking with ID **NL-IVWM** for **January 13, 2026, at 3:00 PM** has been successfully cancelled. The slot is now available again. \n\nIs there anything else I can help you with today?",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-05T18:38:06.652337",
+    "user": "Can you cancel this as well:\nNL-VUJY",
+    "agent": "Your booking with ID **NL-VUJY** for **January 13, 2026, at 2:00 PM** has also been successfully cancelled.\n\nIs there anything else you'd like to manage or any new appointments you'd like to schedule?",
+    "audio_file": null
+  }
+]

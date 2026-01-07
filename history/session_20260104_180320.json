@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-01-04T18:03:22.431130",
+    "user": "My name is Batman",
+    "agent": "Welcome, Batman. Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nTo help you schedule an appointment with one of our expert advisors, could you please tell me which of the following topics you would like to discuss?\n\n*   KYC/Onboarding\n*   SIP/Mandates\n*   Statements/Tax Docs\n*   Withdrawals\n*   Account Changes",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T18:03:24.711059",
+    "user": "What is my name?",
+    "agent": "You mentioned that your name is Batman.\n\nHow can I help you today? Please let me know which topic you would like to discuss so we can proceed with scheduling your appointment:\n\n*   KYC/Onboarding\n*   SIP/Mandates\n*   Statements/Tax Docs\n*   Withdrawals\n*   Account Changes",
+    "audio_file": null
+  }
+]

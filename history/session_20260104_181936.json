@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2026-01-04T18:19:39.447205",
+    "user": "Can we book for 8th Jan 3pm",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI can certainly help you check the availability for January 8th. However, before we proceed, could you please let me know the topic of your appointment? \n\nYou can choose from one of the following:\n*   **KYC/Onboarding**\n*   **SIP/Mandates**\n*   **Statements/Tax Docs**\n*   **Withdrawals**\n*   **Account Changes**",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T18:19:58.423444",
+    "user": "For withdrawals.",
+    "agent": "The 3:00 PM (15:00) slot on January 8, 2026, is available for a discussion on **Withdrawals**. \n\nWould you like to provide a name or alias for this booking? If not, I can proceed using \"Anonymous\".",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-04T18:20:15.364174",
+    "user": "Use Anonymous",
+    "agent": "Your appointment for **Withdrawals** has been successfully booked for **January 8, 2026, at 3:00 PM (15:00)**.\n\nYour booking code is: **NL-AZSU**\n\nPlease complete your details at this secure link: https://hdfc.mf/secure/NL-AZSU\n\nIs there anything else I can assist you with today?",
+    "audio_file": null
+  }
+]

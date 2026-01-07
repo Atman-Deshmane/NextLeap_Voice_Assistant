@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2026-01-06T18:01:47.256711",
+    "user": " Regarding account changes",
+    "agent": "Welcome to HDFC Mutual Funds Advisor Scheduler. Please note this service is for informational purposes only and does not constitute investment advice.\n\nI can certainly help you schedule an appointment regarding **Account Changes**. When would you like to meet with one of our advisors?\n\nPlease note that we have appointments available on weekdays from **January 7, 2026, to January 21, 2026**, at **2:00 PM (14:00)** or **3:00 PM (15:00)** IST. Let me know your preferred date, and I'll check the availability for you.",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T18:02:57.710565",
+    "user": " Let's do it on January 21, 2 PM",
+    "agent": "I've checked the availability for **January 21, 2026**, and the **2:00 PM (14:00)** slot is currently available.\n\nWould you like me to book this for you? Also, please let me know if you'd like to provide a name or alias for the booking (otherwise, I will mark it as \"Anonymous\").",
+    "audio_file": null
+  },
+  {
+    "timestamp": "2026-01-06T18:03:05.511194",
+    "user": "Book 14:00 on 2026-01-21",
+    "agent": "Great! I have successfully booked your appointment.\n\n**Booking Details:**\n*   **Topic:** Account Changes\n*   **Date:** January 21, 2026\n*   **Time:** 2:00 PM (14:00) IST\n*   **Booking Code:** NL-FLT0\n\nTo complete your details and finalize the process, please visit this secure link: https://hdfc.mf/secure/NL-FLT0\n\nIs there anything else I can help you with?",
+    "audio_file": null
+  }
+]
