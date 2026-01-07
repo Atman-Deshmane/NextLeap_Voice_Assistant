@@ -1216,6 +1216,11 @@
             border: 1px solid #e5e7eb;
         }
 
+        /* Hide widgets in pure Chat mode */
+        .chat-mode .chat-widget {
+            display: none !important;
+        }
+
         /* Topic Selector Pills Widget */
         .widget-pills {
             display: flex;
@@ -2280,17 +2285,22 @@
                 chatView.classList.remove('hidden');
                 manualView.classList.add('hidden');
 
-                // Clear chat and show mode-specific welcome on tab switch
-                messagesContainer.innerHTML = '';
-
                 if (viewName === 'hybrid') {
                     if (hybridTab) hybridTab.classList.add('active');
-                    // Hybrid mode: show interactive pills
-                    addMessage('assistant', "Let's proceed! What do you need advisory on?\n\nSelect a topic below:", null, false, { type: 'topic_selector' });
+                    // Remove chat-mode class to show widgets
+                    chatView.classList.remove('chat-mode');
+                    // Show Hybrid welcome if chat is empty
+                    if (messagesContainer.children.length === 0) {
+                        addMessage('assistant', "Let's proceed! What do you need advisory on?\n\nSelect a topic below:", null, false, { type: 'topic_selector' });
+                    }
                 } else {
                     chatTab.classList.add('active');
-                    // Chat mode: pure text only
-                    addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+                    // Add chat-mode class to hide widgets via CSS
+                    chatView.classList.add('chat-mode');
+                    // Show Chat welcome if chat is empty
+                    if (messagesContainer.children.length === 0) {
+                        addMessage('assistant', 'Welcome to HDFC Mutual Funds Advisor Scheduler! 👋\n\nPlease note: This service is for informational and scheduling purposes only and does not constitute investment advice.\n\nHow may I assist you today? I can help you schedule an appointment with our advisors for topics like:\n• KYC/Onboarding\n• SIP/Mandates\n• Statements/Tax Documents\n• Withdrawals\n• Account Changes');
+                    }
                 }
             }
         }
